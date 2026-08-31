@@ -35,15 +35,16 @@ Planner 输出使用 Pydantic 结构化模型；校验失败不会执行工具�
 ### Railway backend
 
 1. 在 Railway 新建项目，添加 PostgreSQL 服务。
-2. 从 GitHub 导入 `kalvinxuxu/serviceagent`，服务目录选择 `backend`。
-3. 添加 PostgreSQL Reference Variable：
+2. 从 GitHub 导入 `kalvinxuxu/serviceagent`，Root Directory 保持仓库根目录。
+3. 将 Dockerfile Path 设置为 `/backend/Dockerfile`。
+4. 添加 PostgreSQL Reference Variable：
 
    ```text
    DATABASE_URL=${{Postgres.DATABASE_URL}}
    ```
 
-4. 配置 `LLM_PROVIDER=mock`、`CORS_ORIGINS`，以及需要时的 `ADMIN_TOKEN`。
-5. 生成 Public Domain，并确认 `https://<railway-domain>/health` 返回 `{"status":"ok"}`。
+5. 配置 `LLM_PROVIDER=mock`、`CORS_ORIGINS`，以及需要时的 `ADMIN_TOKEN`。
+6. 生成 Public Domain，并确认 `https://<railway-domain>/health` 返回 `{"status":"ok"}`。
 
 Railway 会为服务提供 `PORT`；Dockerfile 已配置为监听该端口。Railway 的 PostgreSQL 连接变量和服务引用方式见[官方文档](https://docs.railway.com/databases/postgresql)。
 
