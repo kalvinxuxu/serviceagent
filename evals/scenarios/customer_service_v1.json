@@ -1,0 +1,22 @@
+[
+  {"id":"SC-01","turns":[{"user":"芝士贝果多少钱？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"芝士贝果","quantity":1}],"required_capabilities":["calculate_order_quote"],"forbidden_tools":["list_available_inventory"],"result_type":"QUOTE"}},
+  {"id":"SC-02","turns":[{"user":"两个芝士贝果多少钱？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"芝士贝果","quantity":2}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE"}},
+  {"id":"SC-03","turns":[{"user":"葡萄奶酪维也纳3个多少钱？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"葡萄奶酪维也纳","quantity":3}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE"}},
+  {"id":"SC-04","turns":[{"user":"葡萄奶酪维也纳，3个，多收钱"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"葡萄奶酪维也纳","quantity":3}],"required_capabilities":["calculate_order_quote"],"forbidden_tools":["list_available_inventory"],"result_type":"QUOTE"}},
+  {"id":"SC-05","turns":[{"user":"要3个葡萄奶酪维也纳，2个日式红豆烧"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"葡萄奶酪维也纳","quantity":3},{"product_name":"日式红豆烧","quantity":2}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE"}},
+  {"id":"SC-06","turns":[{"user":"两个原味贝果，一个生吐司，一共多少？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"原味贝果","quantity":2},{"product_name":"生吐司","quantity":1}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE"}},
+  {"id":"SC-07","turns":[{"user":"有什么吐司？"}],"expected":{"goals":["PRODUCT_BROWSE"],"category":"吐司","required_capabilities":["list_available_inventory"],"result_type":"BROWSE"}},
+  {"id":"SC-08","turns":[{"user":"现在有什么盐面包？"}],"expected":{"goals":["PRODUCT_BROWSE"],"category":"盐面包","required_capabilities":["list_available_inventory"],"result_type":"BROWSE"}},
+  {"id":"SC-09","turns":[{"user":"贝果里哪个最便宜？"}],"expected":{"goals":["PRODUCT_COMPARE"],"category":"贝果","result_type":"COMPARE"}},
+  {"id":"SC-10","turns":[{"user":"芝士贝果和双重巧克力贝果哪个便宜？差多少？"}],"expected":{"goals":["PRODUCT_COMPARE"],"entities":[{"product_name":"芝士贝果","quantity":1},{"product_name":"双重巧克力贝果","quantity":1}],"result_type":"COMPARE"}},
+  {"id":"SC-11","turns":[{"user":"20块以内推荐两个不同的贝果"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"category":"贝果","recommendation":{"count":2,"max_total":20,"distinct":true},"result_type":"RECOMMENDATION"}},
+  {"id":"SC-12","turns":[{"user":"30块以内，推荐一个吐司加一个贝果"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"recommendation":{"count":2,"categories":["吐司","贝果"],"max_total":30,"distinct":true},"result_type":"RECOMMENDATION"}},
+  {"id":"SC-13","turns":[{"user":"我不喜欢太甜的，推荐两个吧"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"recommendation":{"count":2,"distinct":true},"result_type":"RECOMMENDATION"}},
+  {"id":"SC-14","turns":[{"user":"小餐包（两个）买两份多少钱？一共有几个？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"小餐包（两个）","quantity":2}],"package_units":4,"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE"}},
+  {"id":"SC-15","turns":[{"user":"有原味贝果吗？"}],"expected":{"goals":["INVENTORY_CHECK"],"entities":[{"product_name":"原味贝果","quantity":1}],"required_capabilities":["check_inventory"],"result_type":"INVENTORY"}},
+  {"id":"SC-16","turns":[{"user":"要两个芝士贝果"},{"user":"一共多少钱？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"芝士贝果","quantity":2}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"SC-17","turns":[{"user":"要两个原味贝果"},{"user":"再加一个生吐司"},{"user":"一共多少？"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"原味贝果","quantity":2},{"product_name":"生吐司","quantity":1}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"SC-18","turns":[{"user":"要两个芝士贝果"},{"user":"我这单现在包邮吗？"}],"expected":{"goals":["SHIPPING_POLICY"],"entities":[{"product_name":"芝士贝果","quantity":2}],"result_type":"POLICY","multi_turn":true}},
+  {"id":"SC-19","turns":[{"user":"现在店里有什么优惠？"}],"expected":{"goals":["PROMOTION_QUERY"],"result_type":"POLICY"}},
+  {"id":"SC-20","turns":[{"user":"要两个芝士贝果"},{"user":"我是会员，刚才这些东西有没有会员优惠？"}],"expected":{"goals":["MEMBERSHIP_PRICING"],"entities":[{"product_name":"芝士贝果","quantity":2}],"result_type":"POLICY","multi_turn":true}}
+]

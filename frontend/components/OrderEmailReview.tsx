@@ -1,0 +1,3 @@
+export function OrderEmailReview({draft, onConfirm, onSend}: {draft: any; onConfirm: () => void; onSend: () => void}) {
+  return <section aria-label="order-email-review"><h2>订单邮件审核</h2><p>客户：{draft.customer?.email ?? "待确认"}　状态：{draft.status}</p><ul>{(draft.checks ?? []).map((item: any) => <li key={item.item_id}>{item.product_name ?? "待确认商品"} × {item.requested_quantity ?? "?"}：{item.fulfillment_status ?? "待核验"}（可供 {item.available_quantity ?? "—"}）</li>)}</ul>{draft.reply && <><textarea readOnly value={draft.reply.body} rows={8} style={{width: "100%"}} /><button type="button" onClick={onConfirm}>确认草稿</button><button type="button" onClick={onSend}>发送模拟邮件</button></>}</section>;
+}

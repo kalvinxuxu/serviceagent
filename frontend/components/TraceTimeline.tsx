@@ -1,0 +1,1 @@
+export function TraceTimeline({steps}: {steps: unknown[]}) { return <ol aria-label="agent-trace">{steps.map((step, i)=><li key={i}><strong>Step {i + 1}</strong><pre>{JSON.stringify(step, null, 2)}</pre></li>)}</ol>; }

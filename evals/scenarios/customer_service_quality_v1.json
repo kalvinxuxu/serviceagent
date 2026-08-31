@@ -1,0 +1,22 @@
+[
+  {"id":"CQ-01","category":"RECOMMENDATION","turns":[{"user":"好，有哪些是适合老年人吃的吗？不要太甜的"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"must_not_expose":["标签：","可售"],"tone":"warm"}},
+  {"id":"CQ-02","category":"RECOMMENDATION","turns":[{"user":"有适合小朋友吃的吗？"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-03","category":"RECOMMENDATION","turns":[{"user":"给家里老人推荐一些早餐面包"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-04","category":"RECOMMENDATION","turns":[{"user":"早餐想吃低糖、饱腹一点的，有推荐吗？"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-05","category":"RECOMMENDATION","turns":[{"user":"我不喜欢太甜，想要咸香口味的面包"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-06","category":"RECOMMENDATION","turns":[{"user":"20元以内推荐两种适合孩子的早餐面包"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-07","category":"RECOMMENDATION","turns":[{"user":"家里老人牙口不太好，推荐口感温和一点的"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-08","category":"RECOMMENDATION","turns":[{"user":"明天早餐一家人吃，帮我搭配吐司和贝果"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-09","category":"RECOMMENDATION","turns":[{"user":"有没有店里的热卖款？不要巧克力味"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-10","category":"RECOMMENDATION","turns":[{"user":"想买两款送给长辈，清淡一点就好"}],"expected":{"goals":["PRODUCT_RECOMMENDATION"],"required_capabilities":["recommend_products"],"tone":"warm"}},
+  {"id":"CQ-11","category":"STORE_SERVICE","turns":[{"user":"面包当天吃不完，应该怎么保存？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"保存","tone":"warm"}},
+  {"id":"CQ-12","category":"STORE_SERVICE","turns":[{"user":"吐司怎么加热比较好吃？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"加热","tone":"warm"}},
+  {"id":"CQ-13","category":"STORE_SERVICE","turns":[{"user":"贝果可以帮忙切片吗？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"切片","tone":"warm"}},
+  {"id":"CQ-14","category":"STORE_SERVICE","turns":[{"user":"可以帮我预留两个原味贝果吗？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"预留","tone":"warm"}},
+  {"id":"CQ-15","category":"STORE_SERVICE","turns":[{"user":"我晚点来取，可以帮我留到晚上吗？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"取货","tone":"warm"}},
+  {"id":"CQ-16","category":"STORE_SERVICE","turns":[{"user":"欧包买回家后怎么保存？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"保存","tone":"warm"}},
+  {"id":"CQ-17","category":"STORE_SERVICE","turns":[{"user":"盐面包需要重新加热吗，怎么热？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"加热","tone":"warm"}},
+  {"id":"CQ-18","category":"STORE_SERVICE","turns":[{"user":"我下午五点过来取，能不能先帮我预留？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"预留","tone":"warm"}},
+  {"id":"CQ-19","category":"STORE_SERVICE","turns":[{"user":"买吐司可以切片吗？厚度能选吗？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"切片","tone":"warm"}},
+  {"id":"CQ-20","category":"STORE_SERVICE","turns":[{"user":"今天买的面包晚上再吃，放哪里比较合适？"}],"expected":{"goals":["FAQ"],"required_capabilities":["answer_store_faq"],"topic":"保存","tone":"warm"}}
+]

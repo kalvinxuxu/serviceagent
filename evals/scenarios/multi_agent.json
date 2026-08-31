@@ -1,0 +1,11 @@
+[
+  {"name": "v2_commerce_route", "criterion_id": "SC-001", "input": "两个原味吐司多少钱？", "goals": ["PRICE_CALCULATION"], "expected_domain": "COMMERCE", "expected_route_action": "CONTINUE_AGENT", "threshold": 1.0},
+  {"name": "v2_inventory_route", "criterion_id": "SC-002", "input": "原味吐司还有货吗？", "goals": ["INVENTORY_CHECK"], "expected_domain": "COMMERCE", "expected_route_action": "CONTINUE_AGENT", "threshold": 1.0},
+  {"name": "v2_return_route", "criterion_id": "SC-003", "input": "我想申请退货", "goals": ["RETURN"], "expected_domain": "AFTER_SALES", "expected_route_action": "CONTINUE_AGENT", "threshold": 1.0},
+  {"name": "v2_recommendation_route", "criterion_id": "SC-004", "input": "给孩子推荐低糖早餐面包", "goals": ["RECOMMENDATION"], "expected_domain": "COMMERCE", "expected_route_action": "CONTINUE_AGENT", "threshold": 1.0},
+  {"name": "v2_handoff_route", "criterion_id": "SC-005", "input": "请转人工客服", "goals": [], "expected_domain": "HUMAN", "expected_route_action": "HANDOFF", "threshold": 1.0},
+  {"name": "v2_unknown_route", "criterion_id": "SC-006", "input": "我想咨询一下", "goals": [], "expected_domain": "UNKNOWN", "expected_route_action": "ASK_USER", "threshold": 1.0},
+  {"name": "v2_after_sales_route", "criterion_id": "SC-007", "input": "收到的面包破损了", "goals": ["COMPLAINT"], "expected_domain": "AFTER_SALES", "expected_route_action": "CONTINUE_AGENT", "threshold": 1.0},
+  {"name": "v2_schema_route", "criterion_id": "SC-008", "input": "两个原味吐司，还有货吗？", "goals": ["PRICE_CALCULATION", "INVENTORY_CHECK"], "expected_domain": "COMMERCE", "expected_route_action": "PARALLEL_TASKS", "threshold": 1.0},
+  {"name": "v2_component_route", "criterion_id": "SC-009", "input": "有哪些吐司？", "goals": ["PRODUCT_SEARCH"], "expected_domain": "COMMERCE", "expected_route_action": "CONTINUE_AGENT", "threshold": 1.0}
+]

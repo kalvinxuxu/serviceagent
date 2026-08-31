@@ -1,0 +1,1016 @@
+{
+  "suite": "customer_service_v1",
+  "run_at": "2026-08-24T05:53:18.499138+00:00",
+  "model": "deepseek-chat",
+  "fixture_version": "7e923d64c81f",
+  "fixture_summary": {
+    "product_count": 43,
+    "policy": {
+      "currency": "CNY",
+      "member_discount_rate": 0.95,
+      "threshold_discounts": [
+        {
+          "threshold": 30,
+          "discount": 3,
+          "label": "满30减3"
+        },
+        {
+          "threshold": 50,
+          "discount": 5,
+          "label": "满50减5"
+        }
+      ],
+      "free_shipping_threshold": 80.0,
+      "shipping_fee": 6.0,
+      "stacking": "member_discount_then_threshold_discount"
+    }
+  },
+  "metrics": {
+    "overall_score": 44.0,
+    "goal_accuracy": 0.45,
+    "entity_accuracy": 0.35,
+    "tool_precision": 0.4,
+    "business_accuracy": 0.0,
+    "response_clarity_score": 1.0,
+    "task_completion_rate": 1.0,
+    "unnecessary_tool_rate": 0.0,
+    "forbidden_tool_call_count": 0,
+    "wrong_fallback_rate": 0.0,
+    "multi_turn_state_consistency": 0.0,
+    "quote_recalculation_accuracy": 0.0,
+    "recommendation_constraint_accuracy": 0.0,
+    "p95_latency_ms": 120.12,
+    "tool_call_count": 0
+  },
+  "cases": [
+    {
+      "id": "SC-01",
+      "turns": [
+        {
+          "user": "芝士贝果多少钱？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 13,
+        "actual_subtotal": null,
+        "expected_total": 19.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 620.28,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-02",
+      "turns": [
+        {
+          "user": "两个芝士贝果多少钱？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 26,
+        "actual_subtotal": null,
+        "expected_total": 32.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 48.27,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-03",
+      "turns": [
+        {
+          "user": "葡萄奶酪维也纳3个多少钱？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 39,
+        "actual_subtotal": null,
+        "expected_total": 42.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 62.6,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-04",
+      "turns": [
+        {
+          "user": "葡萄奶酪维也纳，3个，多收钱"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 39,
+        "actual_subtotal": null,
+        "expected_total": 42.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 43.31,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-05",
+      "turns": [
+        {
+          "user": "要3个葡萄奶酪维也纳，2个日式红豆烧"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 1,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 55,
+        "actual_subtotal": null,
+        "expected_total": 56.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 77.31,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-06",
+      "turns": [
+        {
+          "user": "两个原味贝果，一个生吐司，一共多少？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 34,
+        "actual_subtotal": null,
+        "expected_total": 37.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 94.38,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-07",
+      "turns": [
+        {
+          "user": "有什么吐司？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "available_products": []
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 92.85,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-08",
+      "turns": [
+        {
+          "user": "现在有什么盐面包？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "available_products": []
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 63.12,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-09",
+      "turns": [
+        {
+          "user": "贝果里哪个最便宜？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 48.23,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-10",
+      "turns": [
+        {
+          "user": "芝士贝果和双重巧克力贝果哪个便宜？差多少？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 0,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 57.09,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-11",
+      "turns": [
+        {
+          "user": "20块以内推荐两个不同的贝果"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 39.11,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-12",
+      "turns": [
+        {
+          "user": "30块以内，推荐一个吐司加一个贝果"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 40.23,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-13",
+      "turns": [
+        {
+          "user": "我不喜欢太甜的，推荐两个吧"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 40.38,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-14",
+      "turns": [
+        {
+          "user": "小餐包（两个）买两份多少钱？一共有几个？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 24,
+        "actual_subtotal": null,
+        "expected_total": 30.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 73.84,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-15",
+      "turns": [
+        {
+          "user": "有原味贝果吗？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 110.52,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-16",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "一共多少钱？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。",
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 26,
+        "actual_subtotal": null,
+        "expected_total": 32.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 110.09,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-17",
+      "turns": [
+        {
+          "user": "要两个原味贝果"
+        },
+        {
+          "user": "再加一个生吐司"
+        },
+        {
+          "user": "一共多少？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。",
+        "请告诉我具体想咨询的商品、订单或服务。",
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {
+        "expected_subtotal": 34,
+        "actual_subtotal": null,
+        "expected_total": 37.0,
+        "actual_total": null
+      },
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 120.12,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-18",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "我这单现在包邮吗？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。",
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 0,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 74.89,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-19",
+      "turns": [
+        {
+          "user": "现在店里有什么优惠？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 38.69,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-20",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "我是会员，刚才这些东西有没有会员优惠？"
+        }
+      ],
+      "replies": [
+        "请告诉我具体想咨询的商品、订单或服务。",
+        "请告诉我具体想咨询的商品、订单或服务。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我具体想咨询的商品、订单或服务。"
+          },
+          "reason_code": "INTENT_UNCLEAR",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 0,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "7e923d64c81f",
+      "latency_ms": 104.19,
+      "status": "WAITING_USER",
+      "judge": null
+    }
+  ],
+  "passed": false
+}

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# Frontend
+node_modules/
+.next/
+frontend/.next*/
+frontend/tsconfig.tsbuildinfo
+
+# Local configuration and runtime state
+.env
+*.db
+runtime/*
+!runtime/README.md
+!runtime/logs/
+!runtime/db/
+!runtime/uploads/
+data/evidence/
+data/media/
+*.log
+
+# Generated evaluation output
+reports/benchmark/*.json
+reports/benchmark/*.md

@@ -1,0 +1,23 @@
+{
+  "suite": "followup_recovery_v1",
+  "cases": [
+    {
+      "id": "FR-01",
+      "turns": [
+        {"user": "芝士肠仔包适合小朋友吃吗"},
+        {"user": "好的"}
+      ],
+      "expected": {
+        "pending_followup": "RECOMMEND_PRODUCTS",
+        "accepted_action": "recommend_products",
+        "retained_constraints": {"audience": "儿童"},
+        "forbidden": ["HANDOFF", "LLM_OUTPUT_INVALID"]
+      }
+    },
+    {
+      "id": "FR-02",
+      "turns": [{"user": "好的"}],
+      "expected": {"accepted_action": null, "required_action": "ASK_USER"}
+    }
+  ]
+}

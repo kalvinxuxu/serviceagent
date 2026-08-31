@@ -1,0 +1,1 @@
+[{"name":"return_requires_confirmation","input":"我昨天买的东西想退","expected_status":"WAITING_CONFIRMATION"}]

@@ -1,0 +1,1101 @@
+{
+  "suite": "semantic_state_v1",
+  "run_at": "2026-08-24T09:52:53.961085+00:00",
+  "model": "deepseek-chat",
+  "fixture_version": "53068010fb64",
+  "fixture_summary": {
+    "product_count": 43,
+    "policy": {
+      "currency": "CNY",
+      "member_discount_rate": 0.95,
+      "threshold_discounts": [
+        {
+          "threshold": 30,
+          "discount": 3,
+          "label": "满30减3"
+        },
+        {
+          "threshold": 50,
+          "discount": 5,
+          "label": "满50减5"
+        }
+      ],
+      "free_shipping_threshold": 80,
+      "shipping_fee": 6,
+      "stacking": "member_discount_then_threshold_discount"
+    }
+  },
+  "metrics": {
+    "overall_score": 80.0,
+    "goal_accuracy": 1.0,
+    "entity_accuracy": 1.0,
+    "tool_precision": 1.0,
+    "business_accuracy": 0.0,
+    "response_clarity_score": 1.0,
+    "task_completion_rate": 1.0,
+    "unnecessary_tool_rate": 0.0,
+    "forbidden_tool_call_count": 0,
+    "wrong_fallback_rate": 0.0,
+    "multi_turn_state_consistency": 0.0,
+    "quote_recalculation_accuracy": 0.0,
+    "recommendation_constraint_accuracy": 0.0,
+    "p95_latency_ms": 643.1,
+    "tool_call_count": 8,
+    "component_accuracy": {
+      "understanding": 1.0,
+      "normalization": 1.0,
+      "entity_resolver": 1.0,
+      "constraint_extraction": 1.0,
+      "goal_manager": 1.0,
+      "capability_resolver": 1.0,
+      "planner": 1.0,
+      "plan_validator": 0.75,
+      "tool_selection": 1.0,
+      "tool_arguments": 1.0,
+      "business_service": 1.0,
+      "state_manager": 1.0,
+      "response_generation": 1.0
+    },
+    "first_failure_components": {
+      "PLAN_VALIDATOR": 2
+    },
+    "feedback_correction_rate": 0.375,
+    "semantic_state_coverage": 1.0
+  },
+  "cases": [
+    {
+      "id": "SS-01",
+      "turns": [
+        {
+          "user": "给老人家买点不太甜、软一点的，明早吃，有什么推荐？"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：日式咸奶酪（9元，奶酪风味）；奶香餐包（10元，奶香柔和）；原味贝果（10元，原味、方便搭配）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {},
+              "tags": [
+                "老人"
+              ],
+              "count": 3
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 1090.48,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SS-02",
+      "turns": [
+        {
+          "user": "生吐司有吗"
+        },
+        {
+          "user": "不是，我问的是价格"
+        }
+      ],
+      "replies": [
+        "生吐司目前有货，可售库存 3 件，查询时间为 2026-08-23T06:57:45.566323。",
+        "请告诉我想查询的商品和规格。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "INVENTORY_CHECK",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "check_inventory",
+            "arguments": {
+              "product_id": "SKU026"
+            },
+            "message": null
+          },
+          "reason_code": "INVENTORY_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我想查询的商品和规格。"
+          },
+          "reason_code": "PRODUCT_REQUIRED",
+          "status": "WAITING_USER",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": true,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "check_inventory"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [
+        {
+          "feedback_type": "CORRECTION",
+          "target_component": "UNDERSTANDING",
+          "previous_value": "INVENTORY_CHECK",
+          "corrected_value": "PRICE_CALCULATION",
+          "source": "USER_EXPLICIT",
+          "confidence": 1.0,
+          "raw_text": "不是，我问的是价格"
+        }
+      ],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 522.24,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SS-03",
+      "turns": [
+        {
+          "user": "有什么适合小朋友的"
+        },
+        {
+          "user": "软一点的"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：双重巧克力贝果（6元，巧克力风味）；日式椰蓉蔓越莓（8元，果香）；青柠黄米面包（8元，果香、口味清爽）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。",
+        "请告诉我想查询的商品和规格。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {},
+              "tags": [
+                "儿童"
+              ],
+              "count": 3
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我想查询的商品和规格。"
+          },
+          "reason_code": "PRODUCT_REQUIRED",
+          "status": "WAITING_USER",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": true,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 602.17,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SS-04",
+      "turns": [
+        {
+          "user": "推荐几个面包"
+        },
+        {
+          "user": "都太贵了，有便宜的吗"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：双重巧克力贝果（6元，巧克力风味）；日式红豆烧（8元，小面包）；日式椰蓉蔓越莓（8元，果香）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。",
+        "当前请求超出可用业务能力，我为你转人工处理。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {},
+              "count": 3,
+              "tags": []
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "RECOMMENDATION",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "HANDOFF",
+            "tool_name": null,
+            "arguments": {},
+            "message": "当前请求超出可用业务能力，我为你转人工处理。"
+          },
+          "reason_code": "CAPABILITY_NOT_ALLOWED",
+          "status": "HANDOFF",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": "PLAN_VALIDATOR",
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "FAIL",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [
+        {
+          "feedback_type": "NEGATIVE_PREFERENCE",
+          "target_component": "CONSTRAINT_EXTRACTION",
+          "corrected_value": {
+            "budget_preference": "LOWER_PRICE"
+          },
+          "source": "USER_IMPLICIT",
+          "confidence": 0.85,
+          "raw_text": "都太贵了，有便宜的吗"
+        }
+      ],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "FAIL",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": "PLAN_VALIDATOR",
+      "latency_ms": 643.1,
+      "status": "HANDOFF",
+      "judge": null
+    },
+    {
+      "id": "SS-05",
+      "turns": [
+        {
+          "user": "有生吐司吗"
+        },
+        {
+          "user": "我刚才不是已经说了吗"
+        }
+      ],
+      "replies": [
+        "生吐司目前有货，可售库存 3 件，查询时间为 2026-08-23T06:57:45.566323。",
+        "请告诉我想查询的商品和规格。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "INVENTORY_CHECK",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "check_inventory",
+            "arguments": {
+              "product_id": "SKU026"
+            },
+            "message": null
+          },
+          "reason_code": "INVENTORY_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我想查询的商品和规格。"
+          },
+          "reason_code": "PRODUCT_REQUIRED",
+          "status": "WAITING_USER",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": true,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "check_inventory"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [
+        {
+          "feedback_type": "CONTEXT_FAILURE",
+          "target_component": "STATE_MANAGER",
+          "source": "USER_IMPLICIT",
+          "confidence": 0.9,
+          "raw_text": "我刚才不是已经说了吗"
+        }
+      ],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 484.68,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SS-06",
+      "turns": [
+        {
+          "user": "给老人推荐早餐面包"
+        },
+        {
+          "user": "不要吐司"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：原味吐司（12元，口味温和、适合早餐）；低糖贝果（14元，低糖、口味清爽）；全麦吐司（16元，高纤、饱腹感较好）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。",
+        "当前请求超出可用业务能力，我为你转人工处理。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {},
+              "tags": [
+                "老人",
+                "低糖"
+              ],
+              "count": 3,
+              "category": "早餐"
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "INVENTORY_CHECK",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "HANDOFF",
+            "tool_name": null,
+            "arguments": {},
+            "message": "当前请求超出可用业务能力，我为你转人工处理。"
+          },
+          "reason_code": "CAPABILITY_NOT_ALLOWED",
+          "status": "HANDOFF",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": "PLAN_VALIDATOR",
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "FAIL",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "FAIL",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": "PLAN_VALIDATOR",
+      "latency_ms": 584.64,
+      "status": "HANDOFF",
+      "judge": null
+    },
+    {
+      "id": "SS-07",
+      "turns": [
+        {
+          "user": "两个低糖欧包多少钱，还有货吗"
+        }
+      ],
+      "replies": [
+        "合计 43.0 元（低糖欧包×2=40元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约10.0元商品，即可享受满50减5。 当前选择的商品都有货，库存满足所需数量。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU006",
+                  "name": "低糖欧包",
+                  "quantity": 2,
+                  "unit_price": 20,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 267.99,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SS-08",
+      "turns": [
+        {
+          "user": "推荐商品"
+        },
+        {
+          "user": "刚才第一款多少钱"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：双重巧克力贝果（6元，巧克力风味）；日式红豆烧（8元，小面包）；日式椰蓉蔓越莓（8元，果香）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。",
+        "请告诉我想查询的商品和规格。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {},
+              "count": 3,
+              "tags": []
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "请告诉我想查询的商品和规格。"
+          },
+          "reason_code": "PRODUCT_REQUIRED",
+          "status": "WAITING_USER",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": true,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 598.63,
+      "status": "WAITING_USER",
+      "judge": null
+    }
+  ],
+  "passed": false
+}

@@ -1,0 +1,10 @@
+[
+  {"id":"RM-01","turns":["有什么适合小朋友吃的面包吗","软一点的"],"expected":{"preserve":["audience=儿童"],"add":["texture=柔软"],"required_capability":"recommend_products","must_refresh":true}},
+  {"id":"RM-02","turns":["有什么适合小朋友吃的面包吗","不要太甜"],"expected":{"preserve":["audience=儿童"],"add":["sweetness=LOW"],"required_capability":"recommend_products","must_refresh":true}},
+  {"id":"RM-03","turns":["有什么适合小朋友吃的面包吗","再推荐几款"],"expected":{"preserve":["audience=儿童"],"exclude_previous":true,"required_capability":"recommend_products"}},
+  {"id":"RM-04","turns":["给老人推荐早餐面包","口感软一点"],"expected":{"preserve":["audience=老人","category=早餐"],"add":["texture=柔软"],"required_capability":"recommend_products"}},
+  {"id":"RM-05","turns":["推荐几款低糖面包","换成咸香一点的"],"expected":{"preserve":["nutrition=低糖"],"add":["flavor=咸香"],"required_capability":"recommend_products"}},
+  {"id":"RM-06","turns":["推荐适合小朋友的面包","刚才第一款多少钱"],"expected":{"switch_to":"PRICE_CALCULATION","required_capability":"calculate_order_quote"}},
+  {"id":"RM-07","turns":["推荐适合老人的面包","不要吐司"],"expected":{"preserve":["audience=老人"],"add":["exclude_category=吐司"],"required_capability":"recommend_products"}},
+  {"id":"RM-08","turns":["推荐两款软一点的面包","再来两款"],"expected":{"preserve":["texture=柔软"],"exclude_previous":true,"required_capability":"recommend_products"}}
+]

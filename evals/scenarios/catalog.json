@@ -1,0 +1,1 @@
+[{"name":"inventory_in_stock","input":"全麦吐司还有货吗？","expected_reason_code":"INVENTORY_REQUIRED"},{"name":"unknown_intent","input":"你好，我想咨询一下","expected_action":"ASK_USER"}]

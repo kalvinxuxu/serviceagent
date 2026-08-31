@@ -1,0 +1,7 @@
+[
+  {"name":"order_email_full","input":"有原味贝果吗？","expected_action":"TOOL_CALL"},
+  {"name":"order_email_multi","input":"要两个芝士贝果","expected_action":"TOOL_CALL"},
+  {"name":"order_email_partial","input":"要10个芝士贝果","expected_action":"TOOL_CALL"},
+  {"name":"order_email_clarification","input":"我想订货","expected_action":"ASK_USER"},
+  {"name":"order_email_duplicate","input":"有原味贝果吗？","expected_action":"TOOL_CALL"}
+]

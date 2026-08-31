@@ -1,0 +1,4 @@
+[
+  {"email_id":"seed-full-001","sender":"buyer@example.test","subject":"订单确认","body":"原味贝果2个，明天下午送到公司"},
+  {"email_id":"seed-partial-001","sender":"buyer@example.test","subject":"采购订单","body":"芝士贝果10个，明天送到公司"}
+]

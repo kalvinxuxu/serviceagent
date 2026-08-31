@@ -1,0 +1,1168 @@
+{
+  "suite": "customer_service_v1",
+  "run_at": "2026-08-24T06:22:44.648203+00:00",
+  "model": "deepseek-chat",
+  "fixture_version": "19e0a4ff55f6",
+  "fixture_summary": {
+    "product_count": 43,
+    "policy": {
+      "currency": "CNY",
+      "member_discount_rate": 0.95,
+      "threshold_discounts": [
+        {
+          "threshold": 30,
+          "discount": 3,
+          "label": "满30减3"
+        },
+        {
+          "threshold": 50,
+          "discount": 5,
+          "label": "满50减5"
+        }
+      ],
+      "free_shipping_threshold": 80,
+      "shipping_fee": 6,
+      "stacking": "member_discount_then_threshold_discount"
+    }
+  },
+  "metrics": {
+    "overall_score": 81.0,
+    "goal_accuracy": 0.9,
+    "entity_accuracy": 0.8,
+    "tool_precision": 0.8,
+    "business_accuracy": 0.55,
+    "response_clarity_score": 1.0,
+    "task_completion_rate": 1.0,
+    "unnecessary_tool_rate": 0.1765,
+    "forbidden_tool_call_count": 0,
+    "wrong_fallback_rate": 0.0,
+    "multi_turn_state_consistency": 0.5,
+    "quote_recalculation_accuracy": 0.6667,
+    "recommendation_constraint_accuracy": 0.0,
+    "p95_latency_ms": 17703.65,
+    "tool_call_count": 17
+  },
+  "cases": [
+    {
+      "id": "SC-01",
+      "turns": [
+        {
+          "user": "芝士贝果多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 19.0 元（芝士贝果×1=13元）。当前运费 6.0 元。目前店内有优惠活动，再加购约17.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 1,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 13,
+        "actual_subtotal": 13.0,
+        "expected_total": 19.0,
+        "actual_total": 19.0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 5861.6,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-02",
+      "turns": [
+        {
+          "user": "两个芝士贝果多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 26,
+        "actual_subtotal": 26.0,
+        "expected_total": 32.0,
+        "actual_total": 32.0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 7037.92,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-03",
+      "turns": [
+        {
+          "user": "葡萄奶酪维也纳3个多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 42.0 元（葡萄奶酪维也纳×3=39元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约11.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU024",
+                  "name": "葡萄奶酪维也纳",
+                  "quantity": 3,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 39,
+        "actual_subtotal": 39.0,
+        "expected_total": 42.0,
+        "actual_total": 42.0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 6472.74,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-04",
+      "turns": [
+        {
+          "user": "葡萄奶酪维也纳，3个，多收钱"
+        }
+      ],
+      "replies": [
+        "合计 42.0 元（葡萄奶酪维也纳×3=39元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约11.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU024",
+                  "name": "葡萄奶酪维也纳",
+                  "quantity": 3,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 39,
+        "actual_subtotal": 39.0,
+        "expected_total": 42.0,
+        "actual_total": 42.0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 6107.85,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-05",
+      "turns": [
+        {
+          "user": "要3个葡萄奶酪维也纳，2个日式红豆烧"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：原味吐司（可售20件，12元）；全麦吐司（可售12件，16元）；低糖贝果（可售18件，14元）；可颂（可售8件，18元）；低糖欧包（可售11件，20元）；奶香餐包（可售15件，10元）；蔓越莓吐司（可售6件，17元）；芝士贝果（可售3件，13元）；黑麦面包（可售7件，19元）；坚果面包（可售4件，22元）；原味司康（可售10件，13元）；奶油泡芙（可售5件，18元）；红豆面包（可售13件，11元）；抹茶卷（可售3件，21元）；法式长棍（可售8件，14元）；玉米面包（可售14件，12元）；燕麦饼干（可售21件，15元）；低糖曲奇（可售17件，16元）；海苔肉松贝果（可售3件，10元）；原味贝果（可售3件，10元）。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "product_ids": [
+                "SKU024",
+                "SKU027"
+              ]
+            },
+            "message": "好的，我来为您查询葡萄奶酪维也纳和日式红豆烧的库存情况。"
+          },
+          "reason_code": "CHECK_AVAILABILITY",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [
+        "list_available_inventory"
+      ],
+      "business_detail": {
+        "expected_subtotal": 55,
+        "actual_subtotal": null,
+        "expected_total": 56.0,
+        "actual_total": null
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 9787.98,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-06",
+      "turns": [
+        {
+          "user": "两个原味贝果，一个生吐司，一共多少？"
+        }
+      ],
+      "replies": [
+        "合计 37.0 元（原味贝果×2=20元；生吐司×1=14元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约16.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU022",
+                  "name": "原味贝果",
+                  "quantity": 2,
+                  "unit_price": 10,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                },
+                {
+                  "product_id": "SKU026",
+                  "name": "生吐司",
+                  "quantity": 1,
+                  "unit_price": 14,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 34,
+        "actual_subtotal": 34.0,
+        "expected_total": 37.0,
+        "actual_total": 37.0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 6981.14,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-07",
+      "turns": [
+        {
+          "user": "有什么吐司？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：原味吐司（可售20件，12元）；全麦吐司（可售12件，16元）；蔓越莓吐司（可售6件，17元）；生吐司（可售3件，14元）；茶香奶酥吐司（可售3件，16元）。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "吐司"
+            },
+            "message": "好的，我来帮您看看店里有哪些吐司～"
+          },
+          "reason_code": "CATEGORY_BROWSE",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "list_available_inventory"
+      ],
+      "business_detail": {
+        "available_products": [
+          "原味吐司",
+          "全麦吐司",
+          "蔓越莓吐司",
+          "生吐司",
+          "茶香奶酥吐司"
+        ]
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 8780.15,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-08",
+      "turns": [
+        {
+          "user": "现在有什么盐面包？"
+        }
+      ],
+      "replies": [
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {
+        "available_products": []
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 8654.95,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-09",
+      "turns": [
+        {
+          "user": "贝果里哪个最便宜？"
+        }
+      ],
+      "replies": [
+        "当前请求超出可用业务能力，我为你转人工处理。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "HANDOFF",
+            "tool_name": null,
+            "arguments": {},
+            "message": "当前请求超出可用业务能力，我为你转人工处理。"
+          },
+          "reason_code": "CAPABILITY_NOT_ALLOWED",
+          "status": "HANDOFF"
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 3,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 8927.52,
+      "status": "HANDOFF",
+      "judge": null
+    },
+    {
+      "id": "SC-10",
+      "turns": [
+        {
+          "user": "芝士贝果和双重巧克力贝果哪个便宜？差多少？"
+        }
+      ],
+      "replies": [
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [],
+      "business_detail": {},
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 7791.89,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-11",
+      "turns": [
+        {
+          "user": "20块以内推荐两个不同的贝果"
+        }
+      ],
+      "replies": [
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 7404.37,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-12",
+      "turns": [
+        {
+          "user": "30块以内，推荐一个吐司加一个贝果"
+        }
+      ],
+      "replies": [
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 9937.07,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-13",
+      "turns": [
+        {
+          "user": "我不喜欢太甜的，推荐两个吧"
+        }
+      ],
+      "replies": [
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 9401.82,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-14",
+      "turns": [
+        {
+          "user": "小餐包（两个）买两份多少钱？一共有几个？"
+        }
+      ],
+      "replies": [
+        "合计 30.0 元（小餐包（两个）×2=24元）。当前运费 6.0 元。目前店内有优惠活动，再加购约6.0元商品，即可享受满30减3。 当前选择的商品都有货，库存满足所需数量。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU033",
+                  "name": "小餐包（两个）",
+                  "quantity": 2,
+                  "unit_price": 12,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 24,
+        "actual_subtotal": 24.0,
+        "expected_total": 30.0,
+        "actual_total": 30.0
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 6709.38,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-15",
+      "turns": [
+        {
+          "user": "有原味贝果吗？"
+        }
+      ],
+      "replies": [
+        "原味贝果目前有货，可售库存 3 件，查询时间为 2026-08-23T06:57:45.425468。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "INVENTORY_CHECK",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "check_inventory",
+            "arguments": {
+              "product_id": "SKU022"
+            },
+            "message": "让我为您查询一下原味贝果的库存情况。"
+          },
+          "reason_code": "EXACT_PRODUCT_MATCH",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "check_inventory"
+      ],
+      "business_detail": {},
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 9037.47,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-16",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "一共多少钱？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：低糖贝果（可售18件，14元）；芝士贝果（可售3件，13元）；海苔肉松贝果（可售3件，10元）；原味贝果（可售3件，10元）；双重巧克力贝果（可售3件，6元）。",
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "贝果"
+            },
+            "message": "好的，您想要两个芝士贝果，我先为您查看一下贝果类商品的库存情况。"
+          },
+          "reason_code": "MULTIPLE_CANDIDATES",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [
+        "list_available_inventory"
+      ],
+      "business_detail": {
+        "expected_subtotal": 26,
+        "actual_subtotal": null,
+        "expected_total": 32.0,
+        "actual_total": null
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 17703.65,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-17",
+      "turns": [
+        {
+          "user": "要两个原味贝果"
+        },
+        {
+          "user": "再加一个生吐司"
+        },
+        {
+          "user": "一共多少？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：低糖贝果（可售18件，14元）；芝士贝果（可售3件，13元）；海苔肉松贝果（可售3件，10元）；原味贝果（可售3件，10元）；双重巧克力贝果（可售3件，6元）。",
+        "当前有货的商品有：原味吐司（可售20件，12元）；全麦吐司（可售12件，16元）；蔓越莓吐司（可售6件，17元）；生吐司（可售3件，14元）；茶香奶酥吐司（可售3件，16元）。",
+        "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "贝果",
+              "product_id": "SKU022"
+            },
+            "message": "好的，您想要2个原味贝果，我来为您确认一下库存和价格。"
+          },
+          "reason_code": "PRODUCT_BROWSE_INVENTORY_CHECK",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "吐司"
+            },
+            "message": "好的，我来看看生吐司的库存情况。"
+          },
+          "reason_code": "CATEGORY_INVENTORY_QUERY",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "goal": {
+            "type": "OTHER",
+            "status": "BLOCKED"
+          },
+          "next_action": {
+            "type": "ASK_USER",
+            "tool_name": null,
+            "arguments": {},
+            "message": "我暂时无法准确理解你的需求，请补充商品、订单或服务类型。"
+          },
+          "reason_code": "LLM_OUTPUT_INVALID",
+          "status": "WAITING_USER"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 0,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 2,
+      "tools": [
+        "list_available_inventory",
+        "list_available_inventory"
+      ],
+      "business_detail": {
+        "expected_subtotal": 34,
+        "actual_subtotal": null,
+        "expected_total": 37.0,
+        "actual_total": null
+      },
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 23702.57,
+      "status": "WAITING_USER",
+      "judge": null
+    },
+    {
+      "id": "SC-18",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "我这单现在包邮吗？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：低糖贝果（可售18件，14元）；芝士贝果（可售3件，13元）；海苔肉松贝果（可售3件，10元）；原味贝果（可售3件，10元）；双重巧克力贝果（可售3件，6元）。",
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "贝果"
+            },
+            "message": "好的，芝士贝果来两个！我先帮您看看现在有哪些贝果有货～"
+          },
+          "reason_code": "LIST_INVENTORY_FOR_CATEGORY",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "goal": {
+            "type": "SHIPPING_POLICY",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "quantity": 2
+                }
+              ]
+            },
+            "message": "好的，我来帮您计算一下当前订单的运费情况。"
+          },
+          "reason_code": "CALCULATE_SHIPPING",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "list_available_inventory",
+        "calculate_order_quote"
+      ],
+      "business_detail": {},
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 16488.78,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-19",
+      "turns": [
+        {
+          "user": "现在店里有什么优惠？"
+        }
+      ],
+      "replies": [
+        "当前优惠包括：满30减3、满50减5；满80元包邮，未满包邮门槛运费6元。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PROMOTION_QUERY",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "get_sales_policy",
+            "arguments": {},
+            "message": "好的，我来为您查询一下店里的最新优惠活动。"
+          },
+          "reason_code": "EXPLICIT_PROMOTION_QUERY",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "get_sales_policy"
+      ],
+      "business_detail": {},
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 7285.61,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-20",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "我是会员，刚才这些东西有没有会员优惠？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：低糖贝果（可售18件，14元）；芝士贝果（可售3件，13元）；海苔肉松贝果（可售3件，10元）；原味贝果（可售3件，10元）；双重巧克力贝果（可售3件，6元）。",
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "贝果"
+            },
+            "message": "好的，芝士贝果我们有两种，我帮您看看现在有哪些有货～"
+          },
+          "reason_code": "MULTIPLE_CANDIDATES",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "goal": {
+            "type": "MEMBERSHIP_PRICING",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "quantity": 2
+                }
+              ],
+              "member": true
+            },
+            "message": "好的，您刚才选择了2个芝士贝果，会员价是11.7元/个，我来为您计算一下会员优惠后的总价。"
+          },
+          "reason_code": "MEMBER_PRICE_QUERY",
+          "status": "IN_PROGRESS"
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 0,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "list_available_inventory",
+        "calculate_order_quote"
+      ],
+      "business_detail": {},
+      "fixture_version": "19e0a4ff55f6",
+      "latency_ms": 15730.0,
+      "status": "IN_PROGRESS",
+      "judge": null
+    }
+  ],
+  "passed": false
+}

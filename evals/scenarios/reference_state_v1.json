@@ -1,0 +1,9 @@
+[
+  {"id":"RS-01","turns":[{"user":"有生吐司吗"},{"user":"要2个，多收钱"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"生吐司","quantity":2}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"RS-02","turns":[{"user":"有原味贝果吗？"},{"user":"两个多少钱"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"原味贝果","quantity":2}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"RS-03","turns":[{"user":"原味贝果和生吐司都有吗？"},{"user":"要两个"}],"expected":{"goals":["PRODUCT_SELECTION"],"result_type":"CLARIFICATION","multi_turn":true}},
+  {"id":"RS-04","turns":[{"user":"推荐三个面包"},{"user":"第一款要两个"}],"expected":{"goals":["PRICE_CALCULATION"],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"RS-05","turns":[{"user":"两个原味贝果"},{"user":"再来一个"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"原味贝果","quantity":3}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"RS-06","turns":[{"user":"两个原味贝果"},{"user":"改成一个"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"原味贝果","quantity":1}],"required_capabilities":["edit_selected_items"],"result_type":"QUOTE","multi_turn":true}},
+  {"id":"RS-07","turns":[{"user":"两个原味贝果"},{"user":"多少钱"}],"expected":{"goals":["PRICE_CALCULATION"],"entities":[{"product_name":"原味贝果","quantity":2}],"required_capabilities":["calculate_order_quote"],"result_type":"QUOTE","multi_turn":true}}
+]

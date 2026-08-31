@@ -1,0 +1,10 @@
+[
+  {"id":"SS-01","turns":[{"user":"给老人家买点不太甜、软一点的，明早吃，有什么推荐？"}],"expected":{"semantic":{"audience":"SENIOR","sweetness":"LOW","texture":"SOFT","use_case":"BREAKFAST","needed_at":"tomorrow_morning"}},"scoring_profile":["semantic_state","constraint_extraction","response"]},
+  {"id":"SS-02","turns":[{"user":"生吐司有吗"},{"user":"不是，我问的是价格"}],"expected":{"feedback":{"target_component":"UNDERSTANDING","corrected_value":"PRICE_CALCULATION"}},"scoring_profile":["feedback","goal_transition"]},
+  {"id":"SS-03","turns":[{"user":"有什么适合小朋友的"},{"user":"软一点的"}],"expected":{"semantic":{"audience":"CHILD","texture":"SOFT"},"required_tool":"recommend_products"},"scoring_profile":["semantic_state","tool","state_consistency"]},
+  {"id":"SS-04","turns":[{"user":"推荐几个面包"},{"user":"都太贵了，有便宜的吗"}],"expected":{"feedback":{"target_component":"CONSTRAINT_EXTRACTION"}},"scoring_profile":["feedback","constraint_extraction"]},
+  {"id":"SS-05","turns":[{"user":"有生吐司吗"},{"user":"我刚才不是已经说了吗"}],"expected":{"feedback":{"feedback_type":"CONTEXT_FAILURE"}},"scoring_profile":["feedback"]},
+  {"id":"SS-06","turns":[{"user":"给老人推荐早餐面包"},{"user":"不要吐司"}],"expected":{"semantic":{"audience":"SENIOR","use_case":"BREAKFAST","exclude_category":"吐司"},"required_tool":"recommend_products"},"scoring_profile":["semantic_state","constraint_extraction","tool"]},
+  {"id":"SS-07","turns":[{"user":"两个低糖欧包多少钱，还有货吗"}],"expected":{"goals":["PRICE_CALCULATION","INVENTORY_CHECK"]},"scoring_profile":["goal","tool","business_result"]},
+  {"id":"SS-08","turns":[{"user":"推荐商品"},{"user":"刚才第一款多少钱"}],"expected":{"goals":["PRICE_CALCULATION"],"required_tool":"calculate_order_quote"},"scoring_profile":["goal_transition","entity","tool"]}
+]

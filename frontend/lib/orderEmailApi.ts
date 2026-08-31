@@ -1,0 +1,7 @@
+const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+export type OrderDraft = { draft_id: string; version: number; customer: { email?: string }; items: Array<Record<string, unknown>>; checks: Array<Record<string, unknown>>; reply?: { reply_id: string; body: string; draft_version: number; status: string }; status: string; missing_information: string[] };
+export async function ingestOrderEmail(input: Record<string, unknown>) { const r = await fetch(`${API}/api/v1/order-emails`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input) }); return r.json(); }
+export async function getOrderDraft(id: string): Promise<OrderDraft> { const r = await fetch(`${API}/api/v1/order-drafts/${encodeURIComponent(id)}`); if (!r.ok) throw new Error("DRAFT_NOT_FOUND"); return r.json(); }
+export async function checkOrder(id: string) { const r = await fetch(`${API}/api/v1/order-drafts/${encodeURIComponent(id)}/check`, { method: "POST" }); return r.json(); }
+export async function confirmReply(id: string, input: Record<string, unknown>) { const r = await fetch(`${API}/api/v1/reply-drafts/${encodeURIComponent(id)}/confirm`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input) }); return r.json(); }
+export async function sendReply(id: string) { const r = await fetch(`${API}/api/v1/reply-drafts/${encodeURIComponent(id)}/send`, { method: "POST" }); return r.json(); }

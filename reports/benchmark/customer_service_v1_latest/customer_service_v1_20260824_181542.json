@@ -1,0 +1,2535 @@
+{
+  "suite": "customer_service_v1",
+  "run_at": "2026-08-24T10:15:42.141647+00:00",
+  "model": "deepseek-chat",
+  "fixture_version": "53068010fb64",
+  "fixture_summary": {
+    "product_count": 43,
+    "policy": {
+      "currency": "CNY",
+      "member_discount_rate": 0.95,
+      "threshold_discounts": [
+        {
+          "threshold": 30,
+          "discount": 3,
+          "label": "满30减3"
+        },
+        {
+          "threshold": 50,
+          "discount": 5,
+          "label": "满50减5"
+        }
+      ],
+      "free_shipping_threshold": 80,
+      "shipping_fee": 6,
+      "stacking": "member_discount_then_threshold_discount"
+    }
+  },
+  "metrics": {
+    "overall_score": 96.0,
+    "goal_accuracy": 0.95,
+    "entity_accuracy": 1.0,
+    "tool_precision": 1.0,
+    "business_accuracy": 0.85,
+    "response_clarity_score": 1.0,
+    "task_completion_rate": 1.0,
+    "unnecessary_tool_rate": 0.2,
+    "forbidden_tool_call_count": 0,
+    "wrong_fallback_rate": 0.0,
+    "multi_turn_state_consistency": 1.0,
+    "quote_recalculation_accuracy": 1.0,
+    "recommendation_constraint_accuracy": 0.0,
+    "p95_latency_ms": 7789.54,
+    "tool_call_count": 25,
+    "component_accuracy": {
+      "understanding": 1.0,
+      "normalization": 1.0,
+      "entity_resolver": 1.0,
+      "constraint_extraction": 1.0,
+      "goal_manager": 1.0,
+      "capability_resolver": 1.0,
+      "planner": 1.0,
+      "plan_validator": 1.0,
+      "tool_selection": 1.0,
+      "tool_arguments": 1.0,
+      "business_service": 1.0,
+      "state_manager": 1.0,
+      "response_generation": 1.0
+    },
+    "first_failure_components": {},
+    "feedback_correction_rate": 0.0,
+    "semantic_state_coverage": 1.0
+  },
+  "cases": [
+    {
+      "id": "SC-01",
+      "turns": [
+        {
+          "user": "芝士贝果多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 19.0 元（芝士贝果×1=13元）。当前运费 6.0 元。目前店内有优惠活动，再加购约17.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 1,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 13,
+        "actual_subtotal": 13.0,
+        "expected_total": 19.0,
+        "actual_total": 19.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4072.64,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-02",
+      "turns": [
+        {
+          "user": "两个芝士贝果多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 26,
+        "actual_subtotal": 26.0,
+        "expected_total": 32.0,
+        "actual_total": 32.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3775.8,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-03",
+      "turns": [
+        {
+          "user": "葡萄奶酪维也纳3个多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 42.0 元（葡萄奶酪维也纳×3=39元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约11.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU024",
+                  "name": "葡萄奶酪维也纳",
+                  "quantity": 3,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 39,
+        "actual_subtotal": 39.0,
+        "expected_total": 42.0,
+        "actual_total": 42.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3670.37,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-04",
+      "turns": [
+        {
+          "user": "葡萄奶酪维也纳，3个，多收钱"
+        }
+      ],
+      "replies": [
+        "合计 42.0 元（葡萄奶酪维也纳×3=39元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约11.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU024",
+                  "name": "葡萄奶酪维也纳",
+                  "quantity": 3,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 39,
+        "actual_subtotal": 39.0,
+        "expected_total": 42.0,
+        "actual_total": 42.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3845.95,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-05",
+      "turns": [
+        {
+          "user": "要3个葡萄奶酪维也纳，2个日式红豆烧"
+        }
+      ],
+      "replies": [
+        "合计 56.0 元（葡萄奶酪维也纳×3=39元；日式红豆烧×2=16元）。已优惠 5.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约25.0元商品即可享受满80元包邮。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU024",
+                  "name": "葡萄奶酪维也纳",
+                  "quantity": 3,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                },
+                {
+                  "product_id": "SKU027",
+                  "name": "日式红豆烧",
+                  "quantity": 2,
+                  "unit_price": 8,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 55,
+        "actual_subtotal": 55.0,
+        "expected_total": 56.0,
+        "actual_total": 56.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3931.81,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-06",
+      "turns": [
+        {
+          "user": "两个原味贝果，一个生吐司，一共多少？"
+        }
+      ],
+      "replies": [
+        "合计 37.0 元（原味贝果×2=20元；生吐司×1=14元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约16.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU022",
+                  "name": "原味贝果",
+                  "quantity": 2,
+                  "unit_price": 10,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                },
+                {
+                  "product_id": "SKU026",
+                  "name": "生吐司",
+                  "quantity": 1,
+                  "unit_price": 14,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 34,
+        "actual_subtotal": 34.0,
+        "expected_total": 37.0,
+        "actual_total": 37.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4106.88,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-07",
+      "turns": [
+        {
+          "user": "有什么吐司？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：原味吐司（可售20件，12元）；全麦吐司（可售12件，16元）；蔓越莓吐司（可售6件，17元）；生吐司（可售3件，14元）；茶香奶酥吐司（可售3件，16元）。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "吐司"
+            },
+            "message": null
+          },
+          "reason_code": "PRODUCT_BROWSE_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "list_available_inventory"
+      ],
+      "business_detail": {
+        "available_products": [
+          "原味吐司",
+          "全麦吐司",
+          "蔓越莓吐司",
+          "生吐司",
+          "茶香奶酥吐司"
+        ]
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3515.61,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-08",
+      "turns": [
+        {
+          "user": "现在有什么盐面包？"
+        }
+      ],
+      "replies": [
+        "当前有货的商品有：日式盐面包（可售3件，12元）；海苔海盐包（可售3件，13元）；橙丁盐面包（可售3件，13元）；日式巧克力盐面包（可售3件，14元）。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_BROWSE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "list_available_inventory",
+            "arguments": {
+              "category": "盐面包"
+            },
+            "message": null
+          },
+          "reason_code": "PRODUCT_BROWSE_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "list_available_inventory"
+      ],
+      "business_detail": {
+        "available_products": [
+          "日式盐面包",
+          "海苔海盐包",
+          "橙丁盐面包",
+          "日式巧克力盐面包"
+        ]
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3390.82,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-09",
+      "turns": [
+        {
+          "user": "贝果里哪个最便宜？"
+        }
+      ],
+      "replies": [
+        "双重巧克力贝果最便宜，6元，比其中最贵的商品便宜8元。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_COMPARE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "compare_products",
+            "arguments": {
+              "product_ids": [],
+              "category": "贝果"
+            },
+            "message": null
+          },
+          "reason_code": "PRODUCT_COMPARISON_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "compare_products"
+      ],
+      "business_detail": {
+        "products": [
+          {
+            "product_id": "SKU040",
+            "name": "双重巧克力贝果",
+            "price": 6
+          },
+          {
+            "product_id": "SKU021",
+            "name": "海苔肉松贝果",
+            "price": 10
+          },
+          {
+            "product_id": "SKU022",
+            "name": "原味贝果",
+            "price": 10
+          },
+          {
+            "product_id": "SKU009",
+            "name": "芝士贝果",
+            "price": 13
+          },
+          {
+            "product_id": "SKU003",
+            "name": "低糖贝果",
+            "price": 14
+          }
+        ],
+        "cheapest": {
+          "product_id": "SKU040",
+          "name": "双重巧克力贝果",
+          "price": 6
+        },
+        "difference": 8
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 3930.08,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-10",
+      "turns": [
+        {
+          "user": "芝士贝果和双重巧克力贝果哪个便宜？差多少？"
+        }
+      ],
+      "replies": [
+        "双重巧克力贝果最便宜，6元，比其中最贵的商品便宜7元。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_COMPARE",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "compare_products",
+            "arguments": {
+              "product_ids": [
+                "SKU009",
+                "SKU040",
+                "SKU004"
+              ],
+              "category": "贝果"
+            },
+            "message": null
+          },
+          "reason_code": "PRODUCT_COMPARISON_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "compare_products"
+      ],
+      "business_detail": {
+        "products": [
+          {
+            "product_id": "SKU040",
+            "name": "双重巧克力贝果",
+            "price": 6
+          },
+          {
+            "product_id": "SKU009",
+            "name": "芝士贝果",
+            "price": 13
+          }
+        ],
+        "cheapest": {
+          "product_id": "SKU040",
+          "name": "双重巧克力贝果",
+          "price": 6
+        },
+        "difference": 7
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 5601.14,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-11",
+      "turns": [
+        {
+          "user": "20块以内推荐两个不同的贝果"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：双重巧克力贝果（6元，巧克力风味）；海苔肉松贝果（10元，贝果）；原味贝果（10元，原味、方便搭配）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {
+                "budget": 20,
+                "category": "贝果",
+                "quantity": 2
+              },
+              "count": 3
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {
+        "recommendations": [
+          {
+            "id": "SKU040",
+            "name": "双重巧克力贝果",
+            "category": "贝果",
+            "tags": [
+              "甜味"
+            ],
+            "price": 6,
+            "member_price": 5.4,
+            "audience_tags": [
+              "儿童"
+            ],
+            "selling_tags": [
+              "高性价比"
+            ],
+            "selling_points": [
+              "巧克力风味"
+            ],
+            "inventory_status": "LOW_STOCK",
+            "on_hand": 3,
+            "reserved": 0,
+            "available_quantity": 3,
+            "available": true
+          },
+          {
+            "id": "SKU021",
+            "name": "海苔肉松贝果",
+            "category": "贝果",
+            "tags": [
+              "咸味"
+            ],
+            "price": 10,
+            "member_price": 9,
+            "inventory_status": "LOW_STOCK",
+            "on_hand": 3,
+            "reserved": 0,
+            "available_quantity": 3,
+            "available": true
+          },
+          {
+            "id": "SKU022",
+            "name": "原味贝果",
+            "category": "贝果",
+            "tags": [
+              "原味"
+            ],
+            "price": 10,
+            "member_price": 9,
+            "audience_tags": [
+              "老人",
+              "儿童"
+            ],
+            "texture_tags": [
+              "有嚼劲"
+            ],
+            "flavor_tags": [
+              "原味"
+            ],
+            "selling_tags": [
+              "基础款热卖"
+            ],
+            "selling_points": [
+              "原味",
+              "方便搭配"
+            ],
+            "inventory_status": "LOW_STOCK",
+            "on_hand": 3,
+            "reserved": 0,
+            "available_quantity": 3,
+            "available": true
+          }
+        ],
+        "total": 26.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4194.27,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-12",
+      "turns": [
+        {
+          "user": "30块以内，推荐一个吐司加一个贝果"
+        }
+      ],
+      "replies": [
+        "我按您刚才说的口味和人群看了一下，暂时没有特别合适且有货的款式。要不要放宽一下口味，或者我帮您换一组推荐？"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {
+                "budget": 30,
+                "category": [
+                  "吐司",
+                  "贝果"
+                ]
+              },
+              "count": 3
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {
+        "recommendations": [],
+        "total": 0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4406.42,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-13",
+      "turns": [
+        {
+          "user": "我不喜欢太甜的，推荐两个吧"
+        }
+      ],
+      "replies": [
+        "我帮您挑了几款目前有货、比较适合的：双重巧克力贝果（6元，巧克力风味）；日式红豆烧（8元，小面包）；日式椰蓉蔓越莓（8元，果香）。这些都是现货，您可以按口味挑选；如果您告诉我更偏好软一点、咸一点还是低糖，我还可以继续帮您缩小范围。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRODUCT_RECOMMENDATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "recommend_products",
+            "arguments": {
+              "constraints": {
+                "sweetness": "low"
+              },
+              "count": 3
+            },
+            "message": null
+          },
+          "reason_code": "RECOMMENDATION_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 0,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "recommend_products"
+      ],
+      "business_detail": {
+        "recommendations": [
+          {
+            "id": "SKU040",
+            "name": "双重巧克力贝果",
+            "category": "贝果",
+            "tags": [
+              "甜味"
+            ],
+            "price": 6,
+            "member_price": 5.4,
+            "audience_tags": [
+              "儿童"
+            ],
+            "selling_tags": [
+              "高性价比"
+            ],
+            "selling_points": [
+              "巧克力风味"
+            ],
+            "inventory_status": "LOW_STOCK",
+            "on_hand": 3,
+            "reserved": 0,
+            "available_quantity": 3,
+            "available": true
+          },
+          {
+            "id": "SKU027",
+            "name": "日式红豆烧",
+            "category": "小面包",
+            "tags": [
+              "甜味"
+            ],
+            "price": 8,
+            "member_price": 7.2,
+            "inventory_status": "LOW_STOCK",
+            "on_hand": 3,
+            "reserved": 0,
+            "available_quantity": 3,
+            "available": true
+          },
+          {
+            "id": "SKU028",
+            "name": "日式椰蓉蔓越莓",
+            "category": "小面包",
+            "tags": [
+              "果味"
+            ],
+            "price": 8,
+            "member_price": 7.2,
+            "audience_tags": [
+              "儿童",
+              "成人"
+            ],
+            "selling_tags": [
+              "果味推荐"
+            ],
+            "selling_points": [
+              "果香"
+            ],
+            "inventory_status": "LOW_STOCK",
+            "on_hand": 3,
+            "reserved": 0,
+            "available_quantity": 3,
+            "available": true
+          }
+        ],
+        "total": 22.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4038.89,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-14",
+      "turns": [
+        {
+          "user": "小餐包（两个）买两份多少钱？一共有几个？"
+        }
+      ],
+      "replies": [
+        "合计 30.0 元（小餐包（两个）×2=24元）。当前运费 6.0 元。目前店内有优惠活动，再加购约6.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU033",
+                  "name": "小餐包（两个）",
+                  "quantity": 2,
+                  "unit_price": 12,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 24,
+        "actual_subtotal": 24.0,
+        "expected_total": 30.0,
+        "actual_total": 30.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4010.12,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-15",
+      "turns": [
+        {
+          "user": "有原味贝果吗？"
+        }
+      ],
+      "replies": [
+        "原味贝果目前有货，可售库存 3 件，查询时间为 2026-08-23T06:57:45.425468。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "INVENTORY_CHECK",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "check_inventory",
+            "arguments": {
+              "product_id": "SKU022"
+            },
+            "message": null
+          },
+          "reason_code": "INVENTORY_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "check_inventory"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4342.48,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-16",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "一共多少钱？"
+        }
+      ],
+      "replies": [
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。",
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "subtotal": 26
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote",
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 26,
+        "actual_subtotal": 26.0,
+        "expected_total": 32.0,
+        "actual_total": 32.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 7740.44,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-17",
+      "turns": [
+        {
+          "user": "要两个原味贝果"
+        },
+        {
+          "user": "再加一个生吐司"
+        },
+        {
+          "user": "一共多少？"
+        }
+      ],
+      "replies": [
+        "合计 26.0 元（原味贝果×2=20元）。当前运费 6.0 元。目前店内有优惠活动，再加购约10.0元商品，即可享受满30减3。",
+        "合计 37.0 元（原味贝果×2=20元；生吐司×1=14元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约16.0元商品，即可享受满50减5。",
+        "合计 37.0 元（原味贝果×2=20元；生吐司×1=14元）。已优惠 3.0 元。当前运费 6.0 元。目前店内有优惠活动，再加购约16.0元商品，即可享受满50减5。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU022",
+                  "name": "原味贝果",
+                  "quantity": 2,
+                  "unit_price": 10,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU022",
+                  "name": "原味贝果",
+                  "quantity": 2,
+                  "unit_price": 10,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                },
+                {
+                  "product_id": "SKU026",
+                  "name": "生吐司",
+                  "quantity": 1,
+                  "unit_price": 14,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU022",
+                  "name": "原味贝果",
+                  "quantity": 2,
+                  "unit_price": 10,
+                  "subtotal": 20
+                },
+                {
+                  "product_id": "SKU026",
+                  "name": "生吐司",
+                  "quantity": 1,
+                  "unit_price": 14,
+                  "subtotal": 14
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote",
+        "calculate_order_quote",
+        "calculate_order_quote"
+      ],
+      "business_detail": {
+        "expected_subtotal": 34,
+        "actual_subtotal": 34.0,
+        "expected_total": 37.0,
+        "actual_total": 37.0
+      },
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 11233.99,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-18",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "我这单现在包邮吗？"
+        }
+      ],
+      "replies": [
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。",
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "SHIPPING_POLICY",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "subtotal": 26
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "POLICY_RECALCULATION",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "calculate_order_quote",
+        "calculate_order_quote"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 7612.57,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-19",
+      "turns": [
+        {
+          "user": "现在店里有什么优惠？"
+        }
+      ],
+      "replies": [
+        "当前优惠包括：满30减3、满50减5；满80元包邮，未满包邮门槛运费6元。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PROMOTION_QUERY",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "get_sales_policy",
+            "arguments": {},
+            "message": null
+          },
+          "reason_code": "PROMOTION_POLICY_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 1,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 5,
+      "tools": [
+        "get_sales_policy"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 4324.1,
+      "status": "IN_PROGRESS",
+      "judge": null
+    },
+    {
+      "id": "SC-20",
+      "turns": [
+        {
+          "user": "要两个芝士贝果"
+        },
+        {
+          "user": "我是会员，刚才这些东西有没有会员优惠？"
+        }
+      ],
+      "replies": [
+        "合计 32.0 元（芝士贝果×2=26元）。当前运费 6.0 元。目前店内有优惠活动，再加购约4.0元商品，即可享受满30减3。",
+        "当前优惠包括：满30减3、满50减5；满80元包邮，未满包邮门槛运费6元。"
+      ],
+      "traces": [
+        {
+          "goal": {
+            "type": "PRICE_CALCULATION",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "calculate_order_quote",
+            "arguments": {
+              "items": [
+                {
+                  "product_id": "SKU009",
+                  "name": "芝士贝果",
+                  "quantity": 2,
+                  "unit_price": 13,
+                  "selection_status": "CONFIRMED",
+                  "source": "conversation"
+                }
+              ],
+              "customer_type": "REGULAR"
+            },
+            "message": null
+          },
+          "reason_code": "TOTAL_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        },
+        {
+          "goal": {
+            "type": "PROMOTION_QUERY",
+            "status": "ACTIVE"
+          },
+          "next_action": {
+            "type": "TOOL_CALL",
+            "tool_name": "get_sales_policy",
+            "arguments": {},
+            "message": null
+          },
+          "reason_code": "PROMOTION_POLICY_REQUIRED",
+          "status": "IN_PROGRESS",
+          "evaluation": {
+            "understanding_confidence": 1.0,
+            "goal_confidence": 1.0,
+            "entity_resolution": "PASS",
+            "constraint_extraction": "PASS",
+            "tool_execution": "PASS",
+            "business_result_status": "PASS",
+            "response_grounded": true,
+            "requires_followup": false,
+            "failure_component": null,
+            "component_scores": {
+              "UNDERSTANDING": "PASS",
+              "NORMALIZATION": "PASS",
+              "ENTITY_RESOLVER": "PASS",
+              "CONSTRAINT_EXTRACTION": "PASS",
+              "GOAL_MANAGER": "PASS",
+              "CAPABILITY_RESOLVER": "PASS",
+              "PLANNER": "PASS",
+              "PLAN_VALIDATOR": "PASS",
+              "TOOL_SELECTION": "PASS",
+              "TOOL_ARGUMENTS": "PASS",
+              "BUSINESS_SERVICE": "PASS",
+              "STATE_MANAGER": "PASS",
+              "RESPONSE_GENERATION": "PASS"
+            }
+          }
+        }
+      ],
+      "scores": {
+        "goal": 0,
+        "entity": 1,
+        "tool": 1,
+        "business_result": 1,
+        "response_safety": 1
+      },
+      "total": 4,
+      "tools": [
+        "calculate_order_quote",
+        "get_sales_policy"
+      ],
+      "business_detail": {},
+      "fixture_version": "53068010fb64",
+      "lineage": [],
+      "feedback_events": [],
+      "component_scores": {
+        "UNDERSTANDING": "PASS",
+        "NORMALIZATION": "PASS",
+        "ENTITY_RESOLVER": "PASS",
+        "CONSTRAINT_EXTRACTION": "PASS",
+        "GOAL_MANAGER": "PASS",
+        "CAPABILITY_RESOLVER": "PASS",
+        "PLANNER": "PASS",
+        "PLAN_VALIDATOR": "PASS",
+        "TOOL_SELECTION": "PASS",
+        "TOOL_ARGUMENTS": "PASS",
+        "BUSINESS_SERVICE": "PASS",
+        "STATE_MANAGER": "PASS",
+        "RESPONSE_GENERATION": "PASS"
+      },
+      "failure_component": null,
+      "latency_ms": 7789.54,
+      "status": "IN_PROGRESS",
+      "judge": null
+    }
+  ],
+  "passed": true
+}
