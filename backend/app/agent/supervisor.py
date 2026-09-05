@@ -1,12 +1,12 @@
 import asyncio
 import json
-import os
 import threading
+import os
 
-from .contracts import UnderstandingOutput
-from .multi_agent_contracts import SupervisorDecision
+from .contracts import DomainRouteDecision, UnderstandingOutput
+from .multi_agent_contracts import ConvergedSupervisorDecision, SupervisorDecision
 from .prompts.supervisor import SUPERVISOR_SYSTEM_PROMPT
-from .supervisor_router import build_tasks, route_action
+from .supervisor_router import build_tasks, route_action, route_domain
 from .state import Message
 from ..llm import get_provider
 
@@ -27,7 +27,7 @@ class SupervisorAgent:
     """Route work only; domain calculations remain in domain agents/services."""
 
     def decide(self, understanding: UnderstandingOutput, user_text: str) -> SupervisorDecision:
-        if os.getenv("LLM_PROVIDER", "mock").lower() in {"deepseek", "openai"}:
+        if os.getenv("LLM_PROVIDER", "mock").lower() != "mock":
             try:
                 decision = _run(get_provider().structured_generate(
                     messages=[
@@ -71,3 +71,11 @@ class SupervisorAgent:
             reason_code="MULTI_GOAL_ROUTE" if len(tasks) > 1 else "DOMAIN_ROUTE",
             confidence=0.9,
         )
+
+    def decide_domain(self, understanding: UnderstandingOutput, user_text: str) -> ConvergedSupervisorDecision:
+        """Return only a business domain for Converged Mode."""
+        goals = set(understanding.goals or understanding.candidate_goals)
+        if any(word in user_text for word in ("转人工", "人工客服", "真人客服")):
+            return ConvergedSupervisorDecision(domain="UNKNOWN", confidence=1.0, reason_code="HUMAN_HANDOFF")
+        domain = route_domain(list(goals))
+        return ConvergedSupervisorDecision(domain=domain, confidence=0.9 if domain != "UNKNOWN" else 0.2, reason_code="DOMAIN_ROUTE" if domain != "UNKNOWN" else "DOMAIN_UNKNOWN")

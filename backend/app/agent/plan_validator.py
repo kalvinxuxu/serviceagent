@@ -1,7 +1,14 @@
 from .capability_resolver import resolve_capabilities
-from .contracts import Goal, NextAction, PlannerOutput
+from .contracts import ExecutionDecision, Goal, NextAction, PlannerOutput
 
 DELIVERY_SIDE_EFFECT_TOOLS = {"create_delivery_request", "submit_delivery_request", "create_order"}
+
+
+def validate_execution_decision(decision: ExecutionDecision, allowed_tools: set[str]) -> ExecutionDecision:
+    """Validate a converged decision without changing or executing it."""
+    if decision.kind == "TOOL_CALL" and decision.tool_name not in allowed_tools:
+        raise ValueError("CAPABILITY_NOT_ALLOWED")
+    return decision
 
 
 def validate_plan(output: PlannerOutput, capabilities: list[str]) -> PlannerOutput:

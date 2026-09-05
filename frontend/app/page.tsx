@@ -1,9 +1,10 @@
 "use client";
 
 import { FormEvent, useRef, useState } from "react";
-import { confirmOrder, createSession, deleteCustomerMemory, getCustomerMemory, sendMessage } from "../lib/api";
+import { createSession, sendMessage } from "../lib/api";
 import { ChatWindow, ChatMessage } from "../components/ChatWindow";
-import { AgentInspector } from "../components/AgentInspector";
+import { ProactiveQuestions } from "../components/ProactiveQuestions";
+import { getProactiveQuestions, PQGResponse } from "../lib/pqgApi";
 
 type OrderSummary = { customer_id: string; items: { name?: string; quantity?: number; subtotal?: number }[]; subtotal: number; discount: number; shipping: number; total: number; delivery_mode: "PICKUP" | "SHIPPING"; status: string; requires_confirmation: boolean };
 type UserProfile = { id: string; name: string; summary?: OrderSummary; confirmed?: boolean };
@@ -17,49 +18,52 @@ export default function Home() {
   const [groupSessionId, setGroupSessionId] = useState<string>();
   const [activeUserId, setActiveUserId] = useState("CUS001");
   const [timeline, setTimeline] = useState<TimelineMessage[]>([]);
-  const [inspector, setInspector] = useState<unknown>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [attachments, setAttachments] = useState<File[]>([]);
-  const [memories, setMemories] = useState<{memory_key: string; memory_value: unknown; memory_type: string}[]>([]);
+  const [proactiveQuestions, setProactiveQuestions] = useState<PQGResponse>();
+  const [handoffOffer, setHandoffOffer] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const activeUser = users.find((user) => user.id === activeUserId) ?? users[0];
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const input = text.trim();
-    if ((!input && attachments.length === 0) || loading) return;
-    setText(""); setError(undefined); setLoading(true);
+  async function sendUserMessage(input: string, files: File[] = []) {
+    if ((!input && files.length === 0) || loading) return;
+    setText(""); setError(undefined); setLoading(true); setProactiveQuestions(undefined);
     setTimeline((current) => [...current, { userId: activeUser.id, userName: activeUser.name, role: "user", text: `${activeUser.name}：${input || "（图片）"}` }]);
     try {
       const sid = groupSessionId ?? (await createSession(activeUser.id, INITIAL_USERS.map((user) => user.id))).session_id;
       if (!groupSessionId) setGroupSessionId(sid);
-      const result = await sendMessage(sid, activeUser.id, input, false, attachments, INITIAL_USERS[0].id);
+      const result = await sendMessage(sid, activeUser.id, input, false, files, INITIAL_USERS[0].id);
+      setHandoffOffer(Boolean(result.handoff_offer));
       const summaries = result.order_summaries ?? { [activeUser.id]: result.order_summary };
       setUsers((current) => current.map((user) => summaries[user.id] ? { ...user, summary: summaries[user.id], confirmed: summaries[user.id].status === "CONFIRMED" } : user));
       setTimeline((current) => [...current, { userId: activeUser.id, userName: activeUser.name, role: "agent", text: `Agent（${activeUser.name}）：${result.message.content}`, attachments: result.attachments }]);
-      setInspector(result.inspector); setAttachments([]); if (fileInput.current) fileInput.current.value = "";
+      setAttachments([]); if (fileInput.current) fileInput.current.value = "";
+      const assistantMessageId = `msg_${Date.now()}`;
+      void getProactiveQuestions(sid, assistantMessageId, input, result.message.content, INITIAL_USERS[0].id).then(setProactiveQuestions).catch(() => setProactiveQuestions(undefined));
     } catch { setError("服务暂时不可用，请稍后重试或转人工。"); } finally { setLoading(false); }
   }
 
-  async function handleConfirm(user: UserProfile) {
-    if (!groupSessionId) return;
-    try {
-      const result = await confirmOrder(groupSessionId, user.id, INITIAL_USERS[0].id);
-      const summaries = result.order_summaries ?? { [user.id]: result.order_summary };
-      setUsers((current) => current.map((item) => summaries[item.id] ? { ...item, summary: summaries[item.id], confirmed: summaries[item.id].status === "CONFIRMED" } : item));
-      setTimeline((current) => [...current, { userId: user.id, userName: user.name, role: "agent", text: `Agent（${user.name}）：${result.message}` }]);
-    } catch { setError("订单确认失败，请检查当前用户会话。"); }
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await sendUserMessage(text.trim(), attachments);
   }
 
-  return <main style={{ maxWidth: 900, margin: "40px auto", fontFamily: "sans-serif", padding: 16 }}>
-    <h1>Shanye Shop Demo</h1><p>虚拟智能客服 Agent · 多用户测试</p>
-    <section aria-label="user-switcher" style={{ display: "flex", gap: 8, margin: "16px 0" }}>{users.map((user) => <button key={user.id} type="button" aria-pressed={user.id === activeUserId} onClick={() => setActiveUserId(user.id)} style={{ padding: "8px 16px", fontWeight: user.id === activeUserId ? "bold" : "normal" }}>{user.name}<small style={{ display: "block" }}>{user.id}</small></button>)}</section>
-    <p role="status">当前发言用户：{activeUser.name}（{activeUser.id}）</p>
+  async function handleSuggestedQuestion(question: string) {
+    setText(question);
+    await sendUserMessage(question);
+  }
+
+  return <main className="app-shell">
+    <header className="app-header"><div className="brand-mark">山</div><div><h1>山也面包</h1><p>新鲜出炉 · 每日手作</p></div><span className="online-status"><i />在线客服</span></header>
+    <section aria-label="user-switcher" className="user-switcher"><span>测试客户</span>{users.map((user) => <button key={user.id} type="button" aria-pressed={user.id === activeUserId} onClick={() => setActiveUserId(user.id)}>{user.name}</button>)}</section>
+    <section className="welcome-card"><div><span className="eyebrow">SHANYE BAKERY</span><h2>您好，{activeUser.name} 👋</h2><p>我是山也面包的专属客服，很高兴为您服务。</p></div><div className="bread-illustration">🥐</div></section>
     <ChatWindow messages={timeline} />
-    {loading && <p role="status">Agent 正在规划…</p>}{error && <p role="alert">{error}</p>}<AgentInspector trace={inspector} />
-    <section aria-label="order-summaries" style={{ marginTop: 16, borderTop: "1px solid #ddd", paddingTop: 12 }}><h2>各用户订单确认</h2>{users.map((user) => user.summary?.items?.length ? <div key={user.id} style={{ border: "1px solid #ddd", padding: 12, marginBottom: 8 }}><strong>{user.name}（{user.id}）</strong><p>{user.summary.items.map((item) => `${item.name ?? "商品"} × ${item.quantity ?? 1}`).join("、")}</p><p>金额：{user.summary.total} 元；取货方式：{user.summary.delivery_mode === "PICKUP" ? "到店自取" : "配送/邮寄"}</p>{user.summary.requires_confirmation && !user.confirmed ? <button type="button" onClick={() => void handleConfirm(user)}>确认该用户订单</button> : <span>{user.summary.status === "CONFIRMED" || user.confirmed ? "已确认" : "等待补充信息"}</span>}</div> : null)}</section>
-    <section aria-label="customer-memory" style={{ marginTop: 16, borderTop: "1px solid #ddd", paddingTop: 12 }}><label>当前客户偏好 <button type="button" onClick={async () => setMemories((await getCustomerMemory(activeUser.id)).items)}>查看已确认偏好</button></label>{memories.map((memory) => <div key={memory.memory_key}><span>{memory.memory_key}: {JSON.stringify(memory.memory_value)}</span><button type="button" onClick={async () => { await deleteCustomerMemory(activeUser.id, memory.memory_key); setMemories((current) => current.filter((item) => item.memory_key !== memory.memory_key)); }}>删除</button></div>)}</section>
-    <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, marginTop: 16 }}><input value={text} onChange={(event) => setText(event.target.value)} placeholder={`以${activeUser.name}身份发问…`} style={{ flex: 1, padding: 12 }} /><input ref={fileInput} type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={(event) => setAttachments(Array.from(event.target.files ?? []))} aria-label="上传图片" /><button type="submit" disabled={loading}>发送</button></form>
+    {handoffOffer && <div className="handoff-offer" role="group" aria-label="人工客服选项"><span>还需要帮助吗？</span><button type="button" onClick={() => sendUserMessage("转人工")}>转人工</button><button type="button" onClick={() => setHandoffOffer(false)}>继续补充</button></div>}
+    <ProactiveQuestions sessionId={groupSessionId} result={proactiveQuestions} onSelect={handleSuggestedQuestion} />
+    {loading && <p role="status" className="typing"><span />客服正在思考…</p>}{error && <p role="alert" className="error-banner">{error}</p>}
+    <form onSubmit={handleSubmit} className="composer"><label className="icon-button" aria-label="添加图片"><span>＋</span><input ref={fileInput} type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={(event) => setAttachments(Array.from(event.target.files ?? []))} /></label><input value={text} onChange={(event) => setText(event.target.value)} placeholder="输入您想了解的内容…" aria-label="消息" /><button type="submit" disabled={loading || (!text.trim() && attachments.length === 0)}>发送</button></form>
+    {attachments.length > 0 && <p className="attachment-hint">已选择 {attachments.length} 张图片</p>}
+    <footer className="privacy-note">山也面包客服 · 您的对话内容将被安全保护</footer>
   </main>;
 }

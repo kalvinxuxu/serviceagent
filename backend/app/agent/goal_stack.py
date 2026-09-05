@@ -1,6 +1,9 @@
+import os
 from uuid import uuid4
 
 from .state import CustomerServiceState
+
+LONG_TRANSACTION_GOALS = {"RETURN", "ORDER_STATUS", "COMPLAINT", "AFTER_SALES", "SHIPPING_POLICY", "RESERVATION"}
 
 
 def ensure_goal(state: CustomerServiceState, goal_type: str, *, priority: int = 1) -> dict:
@@ -14,6 +17,10 @@ def ensure_goal(state: CustomerServiceState, goal_type: str, *, priority: int = 
 
 def transition_goals(state: CustomerServiceState, detected_goals: list[str], reason_code: str = "EXPLICIT_NEW_GOAL") -> list[dict]:
     desired = list(dict.fromkeys(detected_goals)) or ["OTHER"]
+    if os.getenv("AGENT_ARCHITECTURE", "legacy").lower() in {"converged", "semantic"}:
+        desired = [goal for goal in desired if goal in LONG_TRANSACTION_GOALS]
+        if not desired:
+            return []
     transitions = []
     for goal in [item for item in state.goals if item["status"] == "ACTIVE"]:
         if goal["type"] not in desired:

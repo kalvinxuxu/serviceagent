@@ -5,6 +5,22 @@ COMMERCE_GOALS = {"INVENTORY_CHECK", "PRICE_CALCULATION", "RECOMMENDATION", "PRO
 AFTER_SALES_GOALS = {"RETURN", "ORDER_STATUS", "COMPLAINT", "AFTER_SALES"}
 
 
+def route_domain(goals: list[str]) -> str:
+    """Converged domain routing; it never creates tasks or actions."""
+    goal_set = set(goals)
+    if goal_set & AFTER_SALES_GOALS:
+        return "AFTER_SALES"
+    if goal_set & COMMERCE_GOALS:
+        return "COMMERCE"
+    return "UNKNOWN"
+
+
+# Legacy-only adapters.  Converged mode must call route_domain and leave task
+# creation/action selection to Planner and Executor respectively.
+legacy_build_tasks = None
+legacy_route_action = None
+
+
 def build_tasks(goals: list[str]) -> list[SupervisorTask]:
     tasks: list[SupervisorTask] = []
     commerce_index = 0
@@ -29,3 +45,7 @@ def route_action(goals: list[str], text: str) -> str:
     if len(tasks) > 1:
         return "PARALLEL_TASKS"
     return "CONTINUE_AGENT"
+
+
+legacy_build_tasks = build_tasks
+legacy_route_action = route_action

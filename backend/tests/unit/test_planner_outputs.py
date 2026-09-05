@@ -22,6 +22,34 @@ def test_planner_routes_generic_bread_availability_to_inventory_listing():
     assert output.next_action.type == "TOOL_CALL"
     assert output.next_action.tool_name == "list_available_inventory"
 
+
+def test_planner_treats_bare_bread_category_as_browse_request():
+    state = CustomerServiceState(session_id="planner-category-short-reply")
+    output = plan(state, "欧包")
+    assert output.next_action.type == "TOOL_CALL"
+    assert output.next_action.tool_name == "list_available_inventory"
+    assert output.next_action.arguments["category"] == "欧包"
+
+
+def test_planner_offers_human_after_three_unresolved_turns_without_auto_handoff():
+    state = CustomerServiceState(session_id="handoff-offer")
+    state.turn_count = 3
+    output = plan(state, "还是没解决")
+    assert output.next_action.type == "ASK_USER"
+    assert output.reason_code == "CLARIFICATION_ESCALATION_OFFER"
+    assert state.known_facts["handoff_offer"] is True
+
+
+def test_planner_consumes_category_from_terse_followup_understanding():
+    from backend.app.agent.understanding import understand
+    state = CustomerServiceState(session_id="planner-category-followup")
+    semantic = understand(state, "那吐司呢？")
+    state.known_facts["understanding"] = semantic.model_dump()
+    state.known_facts["understanding_status"] = "VALID"
+    output = plan(state, "那吐司呢？")
+    assert output.next_action.tool_name == "list_available_inventory"
+    assert output.next_action.arguments["category"] == "吐司"
+
 def test_planner_does_not_handoff_after_product_queries():
     state = CustomerServiceState(session_id="planner-sequence")
     plan(state, "现在还有什么面包")

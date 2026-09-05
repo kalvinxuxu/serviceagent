@@ -84,6 +84,14 @@ def _operation(text: str) -> str:
     return "ADD"
 
 
+def _short_category_reference(text: str) -> str | None:
+    """Normalize terse conversational category replies without choosing a SKU."""
+    value = "".join(text.strip().split())
+    value = re.sub(r"^(那就|那|这个|那个|我想看|看看|请问)", "", value)
+    value = re.sub(r"[吗么呢呀啊？?！!]$", "", value)
+    return value if value in {"贝果", "吐司", "欧包", "盐面包", "小面包"} else None
+
+
 def _deterministic_understanding(text: str) -> UnderstandingOutput:
     """Offline safety parser; production semantics come from the LLM contract."""
     mentions = []
@@ -109,13 +117,23 @@ def _deterministic_understanding(text: str) -> UnderstandingOutput:
                     requested.append(RequestedItem(query=category, quantity=quantity, operation="SET_QUANTITY", category=category))
                 break
     price_request = any(word in text for word in ("多少钱", "多收钱", "合计", "总价", "一起要", "一共多少", "算一下", "算算"))
-    inventory_request = any(word in text for word in ("有货", "库存", "还有", "可以买", "能买", "吗", "么"))
+    # Do not treat the ``么`` in ``什么`` as an availability question.  The
+    # old substring check turned recommendation requests such as
+    # “有什么低糖的？” into an unintended INVENTORY_CHECK goal.
+    product_question = any(product["name"] in text for product in PRODUCTS) and bool(re.search(r"(?:吗|么)[？?]?$", text.strip()))
+    inventory_request = any(word in text for word in ("有货", "库存", "还有", "可以买", "能买", "有吗", "有没有")) or product_question
     purchase_request = bool(requested) and not any(word in text for word in ("不要", "去掉", "删掉", "取消")) and any(word in text for word in ("要", "买", "来", "需要", "给我"))
     goals = []
     explicit_quantity = any(item.quantity > 1 for item in requested)
-    browse_request = any(word in text for word in ("有什么", "哪些")) and any(category in text for category in ("贝果", "吐司", "欧包", "盐面包", "小面包"))
+    bread_categories = ("贝果", "吐司", "欧包", "盐面包", "小面包")
+    category_reference = _short_category_reference(text)
+    category_only_request = category_reference is not None
+    browse_request = (
+        any(word in text for word in ("有什么", "哪些"))
+        and any(category in text for category in ("面包", *bread_categories))
+    ) or category_only_request
     compare_request = any(word in text for word in ("哪个最便宜", "最便宜的是哪个", "哪个便宜", "差多少", "比较一下"))
-    recommendation_request = any(word in text for word in ("推荐", "适合", "不喜欢太甜", "热卖", "长辈", "清淡", "送给")) or ("低糖" in text and not requested)
+    recommendation_request = any(word in text for word in ("推荐", "适合", "不喜欢太甜", "热卖", "长辈", "清淡", "送给", "软", "甜", "咸", "口感")) or ("低糖" in text and not requested)
     faq_request = any(word in text for word in ("怎么保存", "如何保存", "怎么加热", "如何加热", "加热", "切片", "预留", "晚点来取", "晚点取", "取货", "吃不完", "放哪里"))
     reservation_request = any(word in text for word in ("帮我留", "帮我预留", "留一个", "留两个", "预留一个", "预留两个")) or ("还有" in text and "要" in text and "个" in text)
     policy_request = "优惠" in text and not requested
@@ -281,7 +299,18 @@ def understand(state: CustomerServiceState, text: str) -> UnderstandingOutput:
         semantic.goals = [goal for goal in semantic.goals if goal not in {"OTHER", "INVENTORY_CHECK"}]
         if "PRODUCT_BROWSE" not in semantic.goals:
             semantic.goals.append("PRODUCT_BROWSE")
-    if not explicit_product and not edit_reference and "INVENTORY_CHECK" not in semantic.goals:
+    # A short category reply such as “欧包” is a browse request, not a
+    # missing product name. Preserve the category intent even when the LLM
+    # returns an empty/OTHER goal for the terse utterance.
+    category_reference = _short_category_reference(text)
+    if category_reference and not explicit_product:
+        semantic.goals = [goal for goal in semantic.goals if goal not in {"OTHER", "INVENTORY_CHECK"}]
+        if "PRODUCT_BROWSE" not in semantic.goals:
+            semantic.goals.append("PRODUCT_BROWSE")
+        semantic.constraints = {**semantic.constraints, "category": category_reference}
+        semantic.requested_items = []
+        semantic.product_mentions = []
+    elif not explicit_product and not edit_reference and "INVENTORY_CHECK" not in semantic.goals:
         semantic.requested_items = []
         semantic.product_mentions = []
     return semantic

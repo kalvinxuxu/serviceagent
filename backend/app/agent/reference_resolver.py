@@ -5,6 +5,41 @@ from typing import Any
 from .state import CustomerServiceState
 
 
+def resolve_semantic_target(state: CustomerServiceState, target: dict[str, Any] | None) -> dict[str, Any]:
+    """Resolve a Semantic Workspace target without calling an LLM or inventing SKU."""
+    target = target or {}
+    target_type = target.get("type", "NONE")
+    value = target.get("value")
+    if target_type == "REFERENCE":
+        marker = str(value or "").upper()
+        if marker in {"CHEAPEST", "最便宜", "最便宜的"}:
+            return resolve_reference(state, text="最便宜的")
+        if marker in {"FIRST", "第一", "第一款", "FIRST_PRODUCT"}:
+            return resolve_reference(state, text="第一款")
+        if marker in {"SECOND", "第二", "第二个", "SECOND_PRODUCT"}:
+            return resolve_reference(state, text="第二个")
+        if marker in {"FOCUSED", "FOCUSED_PRODUCT", "刚才那个", "那个", "这个"}:
+            return resolve_reference(state)
+        return resolve_reference(state)
+    if target_type == "PRODUCT" and isinstance(value, str):
+        from ..domain.catalog import PRODUCTS
+        product = next((item for item in PRODUCTS if item.get("name") == value), None)
+        if product:
+            return {"reference_type": "EXPLICIT_PRODUCT", "resolved_product_ids": [product["id"]], "confidence": 1.0}
+    if target_type == "CATEGORY" and isinstance(value, str):
+        from ..domain.catalog import PRODUCTS
+        categories = {product.get("id"): product.get("category") for product in PRODUCTS}
+        selected = [
+            item for item in state.known_facts.get("selected_products", [])
+            if item.get("category") == value or categories.get(item.get("product_id")) == value
+        ]
+        if len(selected) == 1:
+            return {"reference_type": "CATEGORY_SELECTED", "resolved_product_ids": [selected[0]["product_id"]], "confidence": 0.95}
+        if len(selected) > 1:
+            return {"reference_type": "AMBIGUOUS", "resolved_product_ids": [], "candidate_product_ids": [item["product_id"] for item in selected], "confidence": 0.0}
+    return {"reference_type": "NONE", "resolved_product_ids": [], "confidence": 0.0}
+
+
 def resolve_reference(state: CustomerServiceState, resolved_items: list[dict[str, Any]] | None = None, text: str = "") -> dict[str, Any]:
     """Resolve an implicit business reference without inventing a SKU."""
     current = [item for item in (resolved_items or []) if item.get("product_id")]

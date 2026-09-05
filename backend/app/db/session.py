@@ -17,6 +17,14 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 def init_db():
     from . import models  # noqa: F401
     from .base import Base
+    if DATABASE_URL.startswith("sqlite"):
+        # SQLite does not create missing parent directories.  Tests and CLI
+        # commands may run from either the repository root or backend/, so
+        # ensure the configured database directory exists before create_all.
+        database_path = DATABASE_URL.removeprefix("sqlite:///")
+        parent = os.path.dirname(os.path.abspath(database_path))
+        if parent:
+            os.makedirs(parent, exist_ok=True)
     Base.metadata.create_all(bind=engine)
     # Keep the demo SQLite database usable when models gain additive fields.
     if DATABASE_URL.startswith("sqlite"):

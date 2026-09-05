@@ -1,0 +1,6 @@
+[
+  {"id": "pqg-001", "context": "顾客询问全麦吐司库存和口感", "followup": "需要我再介绍一下适合早餐的搭配吗？", "frequency": 18},
+  {"id": "pqg-002", "context": "顾客询问面包价格和规格", "followup": "您还想了解不同规格的区别吗？", "frequency": 14},
+  {"id": "pqg-003", "context": "顾客询问配送和取货", "followup": "您更倾向于到店自取还是配送？", "frequency": 21},
+  {"id": "pqg-004", "context": "顾客询问日式椰蓉蔓越莓", "followup": "需要我帮您看看适合几个人分享的数量吗？", "frequency": 9}
+]

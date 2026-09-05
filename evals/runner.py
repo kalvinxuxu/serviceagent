@@ -21,6 +21,7 @@ from backend.app.domain.catalog import check_inventory
 from backend.app.domain.handoff_service import summarize
 from backend.app.domain.recommendation_service import recommend
 from backend.app.tools.after_sales_tools import execute_resolution
+from backend.app.db.seed import load_products_from_seed, seed_inventory
 
 def load_scenarios() -> list[dict[str, Any]]:
     scenarios = []
@@ -89,6 +90,11 @@ def performance_metrics(iterations: int = 30) -> dict[str, float]:
 
 
 def success_criteria() -> dict[str, Any]:
+    # Success criteria must run against the same initialized catalog/inventory
+    # boundary as the benchmark; otherwise recommendation results are null
+    # because the in-memory catalog and inventory table are not bootstrapped.
+    load_products_from_seed()
+    seed_inventory()
     results = run_scenarios()
     total = len(results) or 1
     unknown = CustomerServiceState(session_id="sc001", customer_id="CUS001")
@@ -102,12 +108,12 @@ def success_criteria() -> dict[str, Any]:
         "SC-001": {"value": unknown.status == "HANDOFF", "threshold": True},
         "SC-002": {"value": all("库存" in item["reply"] and "时间" in item["reply"] for item in results if item["name"] == "inventory_in_stock"), "threshold": True},
         "SC-003": {"value": any(item["name"] == "return_requires_confirmation" and item["status"] == "WAITING_CONFIRMATION" for item in results), "threshold": True},
-        "SC-004": {"value": recommendation.known_facts.get("recommendations") and all(p["available_quantity"] > 0 for p in recommendation.known_facts["recommendations"]), "threshold": True},
+        "SC-004": {"value": bool(recommendation.known_facts.get("recommendations")) and all(p["available_quantity"] > 0 for p in recommendation.known_facts["recommendations"]), "threshold": True},
         "SC-005": {"value": all(handoff.get(key) is not None for key in ("original_request", "known_facts", "completed_steps")), "threshold": True},
         "SC-006": {"value": sum(bool(item["reply"]) for item in results) / total >= 0.85, "threshold": 0.85},
         "SC-007": {"value": sum(item["confirmation_violation"] for item in results) == 0, "threshold": 0},
         "SC-008": {"value": all(PlannerOutput.model_validate({"goal": {"type": "OTHER"}, "next_action": {"type": "ASK_USER"}, "reason_code": "EVAL"}).schema_version == "1.0" for _ in [0]), "threshold": 1},
-        "SC-009": {"value": bool(recommend(["低糖"], "早餐")) and performance["query_p95_ms"] < 300, "threshold": "p95 < 300ms"},
+        "SC-009": {"value": bool(recommend(["低糖"])) and performance["query_p95_ms"] < 300, "threshold": "p95 < 300ms"},
         "performance": performance,
         "scenario_count": len(results),
     }

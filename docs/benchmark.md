@@ -45,6 +45,15 @@ python evals/benchmark.py --suite followup_accuracy_v1 --compare
 ```
 
 Legacy uses the existing UnderstandingOutput/Goal/Planner path. Semantic uses the Semantic Workspace, Reference Resolver, and deterministic Business State path. The report stores both variants and deltas for accuracy, clarifications, handoffs, and latency. Semantic mode is not the default until it passes the acceptance gates.
+
+## Converged architecture gates
+
+Converged mode treats `Supervisor` as domain routing only. `active_domain` is limited to
+`COMMERCE`, `AFTER_SALES`, and `UNKNOWN`; human escalation is represented by
+`execution_mode=HUMAN_HANDOFF` and `HandoffState`. Atomic requests must bypass persistent Goal
+Manager and Action Planner. Complex actions must pass Plan Validator and Policy Gate before the
+Executor. Comparison reports also record duplicate decisions, unnecessary tools, premature
+handoffs, step count, and tool-surface reduction.
 ### Clarification and selection metrics
 
 Benchmark case results include `clarification` data for conversation acts, missing slots,

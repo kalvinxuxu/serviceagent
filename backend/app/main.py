@@ -17,6 +17,7 @@ from .api.memory import router as memory_router
 from .api.order_emails import router as order_email_router
 from .api.order_drafts import router as order_draft_router
 from .api.order_replies import router as order_reply_router
+from .api.pqg import router as pqg_router
 from .domain.business_config import load_persisted
 from .db.seed import load_products_from_seed, seed_inventory, seed_media_and_aliases, sync_product_rows
 
@@ -47,6 +48,7 @@ app.include_router(memory_router)
 app.include_router(order_email_router)
 app.include_router(order_draft_router)
 app.include_router(order_reply_router)
+app.include_router(pqg_router)
 load_products_from_seed()
 load_persisted()
 seed_inventory()

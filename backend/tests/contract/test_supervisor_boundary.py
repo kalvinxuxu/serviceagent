@@ -2,6 +2,7 @@ from backend.app.agent.commerce_capabilities import COMMERCE_CAPABILITIES
 from backend.app.agent.supervisor import SupervisorAgent
 from backend.app.agent.contracts import UnderstandingOutput
 from backend.app.agent.multi_agent_contracts import SupervisorDecision
+from backend.app.agent.contracts import DomainRouteDecision
 
 
 def test_supervisor_only_emits_route_tasks_not_business_tools():
@@ -54,3 +55,16 @@ def test_supervisor_falls_back_safely_when_provider_fails(monkeypatch):
     assert decision.domain == "COMMERCE"
     assert decision.tasks
     assert decision.reason_code == "DOMAIN_ROUTE"
+
+
+def test_converged_supervisor_domain_route_cannot_emit_human_or_actions():
+    decision = SupervisorAgent().decide_domain(UnderstandingOutput(goals=["INVENTORY_CHECK"]), "有货吗")
+    assert isinstance(decision, DomainRouteDecision)
+    assert decision.domain == "COMMERCE"
+    assert set(decision.model_dump()) == {"domain", "confidence", "reason_code"}
+
+
+def test_converged_human_request_is_unknown_domain_with_handoff_reason():
+    decision = SupervisorAgent().decide_domain(UnderstandingOutput(goals=[]), "请转人工客服")
+    assert decision.domain == "UNKNOWN"
+    assert decision.reason_code == "HUMAN_HANDOFF"

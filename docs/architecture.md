@@ -2,6 +2,10 @@
 
 ## V2 Agent Boundaries
 
+The V2 contracts are retained for Legacy Mode compatibility. Converged Mode uses the
+domain-only `SupervisorRouter`, optional `ActionPlanner`, `PlanValidator`, `PolicyGate`,
+and `HandoffState` boundaries described below; it does not treat Human as an Agent.
+
 - `SupervisorAgent`：接收 `UnderstandingOutput`，通过 DeepSeek 结构化输出 `SupervisorDecision`；只负责服务域、任务和路由，不调用业务工具。
 - `CommerceAgent`：处理商品、库存、推荐、报价和促销解释；确定性计算继续由 Domain Service 完成。
 - `AfterSalesAgent`：处理订单问题、证据观察和 Resolution Ladder；退款、换货和赔偿必须经过政策、确认、人工审批（如需）及幂等校验。
@@ -32,3 +36,34 @@ understand → supervisor → goal update → capability resolver → planner �
 ## Order Email Agent
 
 The V1 order-email flow is isolated under `backend/app/order_agent` and uses simulated email, catalog, inventory, and send adapters. It parses an email into a versioned draft, checks deterministic inventory facts, composes a reply, and requires operator confirmation before simulated sending. It must not call real mailbox, ERP, WMS, payment, or logistics systems.
+## Proactive Question Generation (PQG)
+
+PQG runs after a completed assistant reply and is isolated from the reply path. It combines a
+sanitized historical-dialogue retriever with the configured LLM provider, validates only the
+versioned `pqg.v1` JSON contract, then deduplicates and applies suppression/claim filters. The
+customer sees at most three suggestions; clicking one fills the composer and never sends it.
+Provider failures return a degraded/empty result while preserving the original reply. Requests
+and interaction events use the `pqg_requests` and `pqg_interaction_events` boundaries and should
+retain only minimum necessary, redacted context.
+# Core Agent convergence routing
+
+The convergence path uses deterministic routing for atomic requests and reserves
+the planner for multi-step or conditional work:
+
+```text
+Semantic Workspace → Reference Resolver → Supervisor Router
+  → atomic: Capability Policy → Executor
+  → long-running: Goal Manager → Capability Policy → Executor
+  → complex: Action Planner → Policy Gate → Executor
+```
+
+Supervisor only selects `COMMERCE`, `AFTER_SALES`, or `UNKNOWN`. Human handoff is represented by
+`execution_mode=HUMAN_HANDOFF` and `HandoffState`. Policy Gate owns
+
+Legacy Supervisor task/action/HUMAN fields and old tool names remain as
+compatibility adapters only; Converged runtime uses the domain-only
+`ConvergedSupervisorDecision` and the canonical tool groups in the registry.
+confirmation, permission, and escalation decisions. Capability Policy is a
+read-only action-to-tool catalogue, not a second planner. Goal Manager is a
+no-op for ordinary read-only queries. `AGENT_ARCHITECTURE=legacy` remains the
+default until Converged Mode passes the comparison gates.

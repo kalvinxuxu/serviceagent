@@ -2,6 +2,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+from .contracts import DomainRouteDecision
+
 
 AgentName = Literal["SUPERVISOR", "COMMERCE", "AFTER_SALES", "HUMAN"]
 TaskStatus = Literal["CREATED", "RUNNING", "COMPLETED", "BLOCKED", "CANCELLED"]
@@ -49,6 +51,12 @@ class SupervisorTask(BaseModel):
 
 
 class SupervisorDecision(BaseModel):
+    """Legacy supervisor envelope retained only for compatibility replay.
+
+    Converged mode uses :class:`DomainRouteDecision`, which has no task or
+    action fields.  Keeping this adapter prevents breaking v2 consumers while
+    stopping new runtime code from depending on its duplicated decisions.
+    """
     schema_version: str = "v2"
     goals: list[str] = Field(min_length=1)
     domain: Literal["COMMERCE", "AFTER_SALES", "HUMAN", "UNKNOWN"]
@@ -65,6 +73,10 @@ class SupervisorDecision(BaseModel):
         if self.route_action == "ASK_USER" and not self.missing_information:
             raise ValueError("ASK_USER requires missing_information")
         return self
+
+
+# Stable name for integrations migrating away from the legacy envelope.
+ConvergedSupervisorDecision = DomainRouteDecision
 
 
 class ComplaintContext(BaseModel):

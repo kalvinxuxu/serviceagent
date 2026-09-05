@@ -1,0 +1,4 @@
+[
+  {"name": "pqg_normal", "input": "全麦吐司库存", "expected_status": "READY"},
+  {"name": "pqg_handoff_suppressed", "input": "我要转人工处理投诉", "expected_status": "SUPPRESSED"}
+]

@@ -88,7 +88,7 @@ def _evidence_response(state: CustomerServiceState, reply: str, trace: dict | No
     persist_active_customer(state)
     summaries = summaries_for_members(state, build_order_summary)
     save_state(state)
-    return {"session_id": state.session_id, "actor_id": state.active_customer_id, "message": {"role": "assistant", "content": reply, "actor_id": state.active_customer_id}, "attachments": state.known_facts.get("response_attachments", []), "status": state.status, "requires_confirmation": state.requires_confirmation, "requires_human": state.requires_human, "order_summary": summaries[state.active_customer_id] if state.active_customer_id else build_order_summary(state), "order_summaries": summaries, "inspector": trace or {}}
+    return {"session_id": state.session_id, "actor_id": state.active_customer_id, "message": {"role": "assistant", "content": reply, "actor_id": state.active_customer_id}, "attachments": state.known_facts.get("response_attachments", []), "handoff_offer": bool(state.known_facts.get("handoff_offer")), "status": state.status, "requires_confirmation": state.requires_confirmation, "requires_human": state.requires_human, "order_summary": summaries[state.active_customer_id] if state.active_customer_id else build_order_summary(state), "order_summaries": summaries, "inspector": trace or {}}
 
 
 @router.post("/sessions/{session_id}/messages")
@@ -99,16 +99,30 @@ async def send_message(session_id: str, request: Request):
         raise HTTPException(status_code=404, detail="SESSION_NOT_FOUND")
     SESSIONS[session_id] = state
     content_type = request.headers.get("content-type", "")
-    if content_type.startswith("multipart/form-data"):
+    if content_type.startswith("multipart/form-data") or content_type.startswith("application/x-www-form-urlencoded"):
         form = await request.form()
         message = str(form.get("message") or "").strip()
         customer_id = form.get("actor_id") or form.get("customer_id")
         confirmed = str(form.get("confirmed") or "false").lower() == "true"
         uploads = [item for item in form.multi_items() if item[0] == "attachments"]
     else:
-        payload = await request.json()
-        req = MessageRequest.model_validate(payload)
-        message, customer_id, confirmed, uploads = req.message, req.actor_id or req.customer_id, req.confirmed, []
+        try:
+            payload = await request.json()
+        except ValueError:
+            # Some clients send a body without a reliable content-type; parse
+            # it as a form before returning a generic service failure.
+            form = await request.form()
+            message = str(form.get("message") or "").strip()
+            customer_id = form.get("actor_id") or form.get("customer_id")
+            confirmed = str(form.get("confirmed") or "false").lower() == "true"
+            uploads = [item for item in form.multi_items() if item[0] == "attachments"]
+            payload = None
+        if payload is None:
+            req = None
+        else:
+            req = MessageRequest.model_validate(payload)
+        if req is not None:
+            message, customer_id, confirmed, uploads = req.message, req.actor_id or req.customer_id, req.confirmed, []
     actor_id = _authorize_actor(state, customer_id, request.headers.get("x-session-owner"))
     activate_customer(state, actor_id)
 
@@ -168,7 +182,7 @@ async def send_message(session_id: str, request: Request):
     persist_active_customer(state)
     summaries = summaries_for_members(state, build_order_summary)
     save_state(state)
-    return {"session_id": session_id, "actor_id": state.active_customer_id, "message": {"role":"assistant", "content":reply, "actor_id": state.active_customer_id}, "attachments": state.known_facts.get("response_attachments", []), "status":state.status, "requires_confirmation":state.requires_confirmation, "requires_human":state.requires_human, "order_summary": summaries[state.active_customer_id] if state.active_customer_id else build_order_summary(state), "order_summaries": summaries, "inspector":trace}
+    return {"session_id": session_id, "actor_id": state.active_customer_id, "message": {"role":"assistant", "content":reply, "actor_id": state.active_customer_id}, "attachments": state.known_facts.get("response_attachments", []), "handoff_offer": bool(state.known_facts.get("handoff_offer")), "status":state.status, "requires_confirmation":state.requires_confirmation, "requires_human":state.requires_human, "order_summary": summaries[state.active_customer_id] if state.active_customer_id else build_order_summary(state), "order_summaries": summaries, "inspector":trace}
 
 
 def _logistics_reply(result: dict) -> str:

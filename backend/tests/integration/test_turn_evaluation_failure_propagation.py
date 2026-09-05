@@ -12,4 +12,4 @@ def test_invalid_understanding_marks_downstream_steps_not_run():
     assert evaluation.failure_component == "UNDERSTANDING"
     assert evaluation.component_scores["PLANNER"] == "NOT_RUN"
     assert evaluation.component_scores["BUSINESS_SERVICE"] == "NOT_RUN"
-    assert evaluation.component_scores["RESPONSE_GENERATION"] == "FAIL"
+    assert evaluation.component_scores["RESPONSE_GENERATION"] == "NOT_RUN"

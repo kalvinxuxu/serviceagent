@@ -1,3 +1,5 @@
+import pytest
+
 from backend.app.agent.graph import run_turn
 from backend.app.agent.state import CustomerServiceState
 from backend.app.db.seed import load_products_from_seed, seed_inventory
@@ -8,8 +10,8 @@ def test_recommendation_selection_asks_quantity_then_quotes(monkeypatch):
     load_products_from_seed()
     seed_inventory()
     state = CustomerServiceState(session_id="selection-clarification")
-    state, _, first_trace = run_turn(state, "有什么适合小朋友吃的面包吗")
-    state, reply, second_trace = run_turn(state, "那要日式椰蓉蔓越莓")
+    state, _, first_trace = run_turn(state, "\u6709\u4ec0\u4e48\u9002\u5408\u5c0f\u670b\u53cb\u5403\u7684\u9762\u5305\u5417")
+    state, reply, second_trace = run_turn(state, "\u90a3\u8981\u65e5\u5f0f\u6930\u84c9\u8513\u8d8a\u8393")
     assert first_trace["next_action"]["tool_name"] == "recommend_products"
     assert second_trace["reason_code"] == "SELECTION_QUANTITY_REQUIRED"
     assert state.status == "WAITING_SELECTION"
@@ -20,7 +22,7 @@ def test_recommendation_selection_asks_quantity_then_quotes(monkeypatch):
     assert third_trace["next_action"]["tool_name"] == "calculate_order_quote"
     assert state.quote_context and state.quote_context.total == 16
     assert state.status == "IN_PROGRESS"
-    assert "日式椰蓉蔓越莓×2" in reply
+    assert "\u65e5\u5f0f\u6930\u84c9\u8513\u8d8a\u8393×2" in reply
 
 
 def test_inventory_lookup_promotes_focus_then_quantity_selects_and_quotes(monkeypatch):
@@ -104,3 +106,21 @@ def test_broad_bread_browse_uses_natural_category_summary(monkeypatch):
     assert trace["next_action"]["tool_name"] == "list_available_inventory"
     assert "可售" not in reply
     assert "您更想看哪一类" in reply
+
+
+@pytest.mark.parametrize("architecture", ["legacy", "semantic"])
+def test_displayed_multi_product_prices_are_quoted_in_both_architectures(monkeypatch, architecture):
+    monkeypatch.setenv("LLM_PROVIDER", "mock")
+    monkeypatch.setenv("AGENT_ARCHITECTURE", architecture)
+    load_products_from_seed()
+    seed_inventory()
+    state = CustomerServiceState(session_id=f"displayed-multi-price-{architecture}")
+    state, _, _ = run_turn(state, "现在有什么面包？")
+    state, _, _ = run_turn(state, "有什么吐司吗？")
+    state, reply, trace = run_turn(state, "原味吐司（14元），蔓越莓吐司（17元）各要1个，多少钱？")
+
+    assert trace["next_action"]["tool_name"] == "calculate_order_quote"
+    items = trace["next_action"]["arguments"]["items"]
+    assert {(item["name"], item["quantity"]) for item in items} == {("原味吐司", 1), ("蔓越莓吐司", 1)}
+    assert state.quote_context and state.quote_context.total == 28
+    assert "28" in reply

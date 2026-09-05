@@ -1,6 +1,7 @@
+import os
 from typing import Any, TypedDict
 
-from .contracts import Goal, NextAction, PlannerOutput, PendingFollowup, UnderstandingOutput
+from .contracts import Goal, NextAction, PlannerOutput, PendingFollowup, UnderstandingOutput, ResponseContext
 from .capability_resolver import resolve_capabilities
 from .goal_stack import infer_goal_types, transition_goals, update_goal_status
 from .planner import plan
@@ -22,8 +23,10 @@ from .semantic_state import merge_understanding_state, semantic_from_constraints
 from .turn_evaluator import evaluate_turn
 from ..domain.memory_service import read as read_memory, write as write_memory
 from .reference_resolver import resolve_reference
-from .semantic_workspace import understand_semantic, to_understanding
+from .semantic_workspace import understand_semantic, semantic_action, to_understanding
 from .followup_resolver import resolve_followup
+from .policy_gate import decide as policy_decide
+from .response_composer import compose as compose_response
 
 
 def _state_snapshot(state: CustomerServiceState) -> dict[str, Any]:
@@ -69,6 +72,7 @@ class TurnGraphState(TypedDict, total=False):
     direct_action: bool
     capabilities: list[str]
     supervisor_decision: Any
+    short_path: bool
 
 
 def _load_context(ctx: TurnGraphState) -> dict:
@@ -114,9 +118,10 @@ def _understand(ctx: TurnGraphState) -> dict:
             if followup.type == "REJECT_FOLLOWUP":
                 state.pending_followup_history.append({**state.pending_followup.model_dump(), "result": followup.type})
                 state.pending_followup = None
-        if __import__("os").getenv("AGENT_ARCHITECTURE", "legacy").lower() == "semantic":
+        if __import__("os").getenv("AGENT_ARCHITECTURE", "legacy").lower() in {"semantic", "converged"}:
             workspace = understand_semantic(state, ctx["text"])
             state.known_facts["semantic_workspace"] = workspace.model_dump()
+            state.known_facts["semantic_action"] = semantic_action(workspace)
             semantic = to_understanding(workspace)
             # The workspace supplies language targets only. The existing
             # Resolver remains the sole SKU authority; delivery extraction is
@@ -178,6 +183,28 @@ def _understand(ctx: TurnGraphState) -> dict:
     return {"state": state}
 
 
+def _apply_converged_mutation(ctx: TurnGraphState) -> dict:
+    state = ctx["state"]
+    if os.getenv("AGENT_ARCHITECTURE", "legacy").lower() not in {"converged", "semantic"}:
+        return {"state": state}
+    action = state.known_facts.get("semantic_action", {})
+    operation = action.get("operation")
+    if operation not in {"SELECT", "ADD", "REMOVE", "SET_QUANTITY", "REPLACE", "KEEP"}:
+        return {"state": state}
+    # Inventory/product lookup discusses a product but does not select it.
+    # Only selection-oriented intents may promote an item into the working set.
+    if action.get("intent") in {"INVENTORY_CHECK", "PRODUCT_BROWSE", "PRODUCT_RECOMMENDATION"} and operation in {"SELECT", "ADD"}:
+        return {"state": state}
+    from .reference_resolver import resolve_semantic_target
+    from .state_mutation import apply_action
+    reference = resolve_semantic_target(state, action.get("target"))
+    state.known_facts["reference_resolution"] = reference
+    mutation = apply_action(state, operation, reference, action.get("quantity"))
+    state.known_facts["state_mutation"] = mutation
+    _lineage(state, "STATE_UPDATER", _state_snapshot(state), mutation, __import__("time").perf_counter(), "PASS" if mutation["status"] == "PASS" else "FAIL", None if mutation["status"] == "PASS" else mutation["status"])
+    return {"state": state}
+
+
 def _update_goal_stack(ctx: TurnGraphState) -> dict:
     state = ctx["state"]
     import time
@@ -204,6 +231,23 @@ def _supervise(ctx: TurnGraphState) -> dict:
         return {"state": state}
     from .contracts import UnderstandingOutput
     understanding = UnderstandingOutput.model_validate(state.known_facts.get("understanding", {}))
+    if os.getenv("AGENT_ARCHITECTURE", "legacy").lower() in {"converged", "semantic"}:
+        decision = SupervisorAgent().decide_domain(understanding, ctx["text"])
+        state.known_facts["supervisor_domain_decision"] = decision.model_dump()
+        state.active_domain = decision.domain
+        state.active_agent = decision.domain if decision.domain in {"COMMERCE", "AFTER_SALES"} else "SUPERVISOR"
+        if decision.reason_code == "HUMAN_HANDOFF":
+            from .contracts import HandoffState
+            state.execution_mode = "HUMAN_HANDOFF"
+            state.handoff_state = HandoffState(reason_code=decision.reason_code, context={"user_text": ctx["text"]})
+            state.requires_human = True
+            state.status = "HANDOFF"
+        record_agent_transition(
+            state.session_id,
+            {"from": "SUPERVISOR", "domain": state.active_domain, "execution_mode": state.execution_mode, "reason_code": decision.reason_code},
+            ctx["run_id"],
+        )
+        return {"state": state, "supervisor_domain_decision": decision}
     decision = SupervisorAgent().decide(understanding, ctx["text"])
     state.known_facts["supervisor_decision"] = decision.model_dump()
     state.task_stack = [task.model_dump() for task in decision.tasks]
@@ -236,9 +280,73 @@ def _resolve_capabilities(ctx: TurnGraphState) -> dict:
     return {"state": state, "capabilities": capabilities}
 
 
+def _converged_atomic_output(state: CustomerServiceState, text: str) -> PlannerOutput | None:
+    """Map simple read-only actions without invoking the complex Planner."""
+    if os.getenv("AGENT_ARCHITECTURE", "legacy").lower() not in {"converged", "semantic"}:
+        return None
+    understanding = state.known_facts.get("understanding", {})
+    goals = set(understanding.get("goals", []))
+    resolved = [item for item in state.known_facts.get("resolved_products", []) if item.get("product_id")]
+    if "INVENTORY_CHECK" in goals and len(resolved) == 1:
+        return PlannerOutput(
+            goal=Goal(type="INVENTORY_CHECK"),
+            next_action=NextAction(type="TOOL_CALL", tool_name="check_inventory", arguments={"product_id": resolved[0]["product_id"]}),
+            reason_code="ATOMIC_INVENTORY_QUERY",
+            current_goal_id=None,
+        )
+    if "PRODUCT_BROWSE" in goals:
+        category = next((item.get("category") for item in resolved if item.get("category")), None)
+        if category is None:
+            # Category extraction is normalization, not a planner/tool rule;
+            # use the catalog vocabulary so “有什么贝果” reaches the domain
+            # inventory query with a complete argument.
+            category = next((value for value in {item.get("category") for item in PRODUCTS} if value and value in text), None)
+            if category is None:
+                category = next((value for value in {item.get("name") for item in PRODUCTS} if value and value in text), None)
+        return PlannerOutput(
+            goal=Goal(type="PRODUCT_BROWSE"),
+            next_action=NextAction(type="TOOL_CALL", tool_name="list_available_inventory", arguments={"category": category, "query": ""}),
+            reason_code="ATOMIC_PRODUCT_BROWSE",
+            current_goal_id=None,
+        )
+    if "PRODUCT_COMPARE" in goals:
+        candidate_ids = list(state.recommendation_candidates)
+        if not candidate_ids:
+            candidate_ids = [item.get("id") or item.get("product_id") for item in state.known_facts.get("recommendations", [])]
+        if candidate_ids:
+            return PlannerOutput(
+                goal=Goal(type="PRODUCT_COMPARE"),
+                next_action=NextAction(type="TOOL_CALL", tool_name="compare_products", arguments={"product_ids": candidate_ids}),
+                reason_code="ATOMIC_PRODUCT_COMPARE",
+                current_goal_id=None,
+            )
+    if "PRICE_CALCULATION" in goals:
+        items = state.known_facts.get("selected_products", []) if state.known_facts.get("state_mutation", {}).get("status") == "PASS" else state.quote_context.items if state.quote_context and state.quote_context.items else state.known_facts.get("selected_products", [])
+        if items and not any(item.get("operation") in {"REMOVE", "SET_QUANTITY", "REPLACE"} for item in resolved):
+            return PlannerOutput(
+                goal=Goal(type="PRICE_CALCULATION"),
+                next_action=NextAction(type="TOOL_CALL", tool_name="calculate_order_quote", arguments={"items": items, "customer_type": state.known_facts.get("customer_type", "REGULAR"), "delivery_mode": state.delivery_mode}),
+                reason_code="ATOMIC_QUOTE_QUERY",
+                current_goal_id=None,
+            )
+    return None
+
+
 def _planner(ctx: TurnGraphState) -> dict:
     state = ctx["state"]
-    if ctx.get("confirmed") and state.known_facts.get("order_id"):
+    if state.execution_mode == "HUMAN_HANDOFF":
+        output = PlannerOutput(
+            goal=Goal(type="OTHER", status="BLOCKED"),
+            next_action=NextAction(type="HANDOFF", message="已为你转接人工客服，并保留当前对话。"),
+            reason_code="HUMAN_HANDOFF",
+            current_goal_id=None,
+        )
+        return {"state": state, "output": output}
+    if (
+        os.getenv("AGENT_ARCHITECTURE", "legacy").lower() not in {"converged", "semantic"}
+        and ctx.get("confirmed")
+        and state.known_facts.get("order_id")
+    ):
         result = execute(
             "create_return_request",
             {
@@ -254,7 +362,9 @@ def _planner(ctx: TurnGraphState) -> dict:
         reply = "退货申请已提交，申请编号为 " + result.data["id"] if result.ok else "提交失败，请转人工处理。"
         return {"state": state, "result": result, "reply": reply, "trace": trace, "direct_action": True}
 
-    output = CommerceAgent().plan_turn(state, ctx["text"], ctx.get("capabilities", [])) if state.active_agent == "COMMERCE" else plan(state, ctx["text"], ctx.get("capabilities", []))
+    output = _converged_atomic_output(state, ctx["text"])
+    if output is None:
+        output = CommerceAgent().plan_turn(state, ctx["text"], ctx.get("capabilities", [])) if state.active_agent == "COMMERCE" else plan(state, ctx["text"], ctx.get("capabilities", []))
     state.pending_items = output.missing_information
     record(
         state.session_id,
@@ -264,6 +374,31 @@ def _planner(ctx: TurnGraphState) -> dict:
     state.completed_steps.append(f"planner:{output.reason_code}")
     _lineage(state, "PLANNER", _state_snapshot(state), {"output": output.model_dump()}, __import__("time").perf_counter())
     return {"state": state, "output": output}
+
+
+def _select_converged_path(ctx: TurnGraphState) -> dict:
+    """Select the atomic path before Supervisor/Goal Manager in Converged Mode."""
+    state = ctx["state"]
+    output = _converged_atomic_output(state, ctx["text"])
+    if output is None:
+        return {"state": state, "short_path": False}
+    _lineage(
+        state,
+        "SUPERVISOR_ROUTER",
+        _state_snapshot(state),
+        {"route": "ATOMIC_SHORT_PATH", "action": output.next_action.model_dump()},
+        __import__("time").perf_counter(),
+    )
+    return {"state": state, "output": output, "short_path": True}
+
+
+def _converged_short_path(ctx: TurnGraphState) -> dict:
+    """Pass an already-selected atomic decision to the common executor route."""
+    return {"state": ctx["state"], "output": ctx["output"]}
+
+
+def _route_after_path_selection(ctx: TurnGraphState) -> str:
+    return "short_path" if ctx.get("short_path") else "supervisor"
 
 
 def _validate(ctx: TurnGraphState) -> dict:
@@ -297,7 +432,33 @@ def _validate(ctx: TurnGraphState) -> dict:
                 decision_summary=output.decision_summary,
             )
     capabilities = list(ctx.get("capabilities", []))
-    validated = validate_plan(output, capabilities)
+    # A category-only browse is a safe, read-only action even when the LLM
+    # understanding is empty. The deterministic planner has already supplied
+    # a validated category; make the matching capability available instead of
+    # converting a recoverable provider miss into a handoff.
+    if (
+        output.next_action.type == "TOOL_CALL"
+        and output.next_action.tool_name == "list_available_inventory"
+        and output.next_action.arguments.get("category")
+    ):
+        capabilities.append("list_available_inventory")
+        capabilities = sorted(set(capabilities))
+    converged = os.getenv("AGENT_ARCHITECTURE", "legacy").lower() in {"converged", "semantic"}
+    if converged:
+        from .action_planner import to_execution_decision
+        from .plan_validator import validate_execution_decision
+        try:
+            validate_execution_decision(to_execution_decision(output), set(capabilities))
+            validated = output
+        except ValueError:
+            validated = PlannerOutput(
+                goal=Goal(type=output.goal.type, status="BLOCKED"),
+                next_action=NextAction(type="HANDOFF", message="当前请求无法安全执行，我为你转人工处理。"),
+                reason_code="CAPABILITY_NOT_ALLOWED",
+                current_goal_id=output.current_goal_id,
+            )
+    else:
+        validated = validate_plan(output, capabilities)
     if state.known_facts.get("preserve_selection") and output.next_action.tool_name == "calculate_order_quote":
         # This is a validated, read-only re-quote over the existing state;
         # do not let an unrelated stale capability list trigger handoff.
@@ -342,6 +503,15 @@ def _policy_gate(ctx: TurnGraphState) -> dict:
     if ctx.get("direct_action"):
         return {}
     output = ctx["output"]
+    policy = policy_decide(output.next_action.tool_name, confirmed=ctx.get("confirmed", False))
+    if policy.decision == "REQUIRE_CONFIRMATION" and output.next_action.type == "TOOL_CALL":
+        output = PlannerOutput(
+            goal=output.goal,
+            next_action=NextAction(type="ASK_CONFIRMATION", message="执行该操作前需要你的明确确认。"),
+            reason_code="CONFIRMATION_REQUIRED",
+            requires_confirmation=True,
+            current_goal_id=output.current_goal_id,
+        )
     if output.next_action.type == "TOOL_CALL" and output.next_action.tool_name == "create_return_request" and not ctx.get("confirmed"):
         output = PlannerOutput(
             goal=output.goal,
@@ -361,7 +531,12 @@ def _route(ctx: TurnGraphState) -> dict:
     action = output.next_action
     trace = {"goal": output.goal.model_dump(), "next_action": action.model_dump(), "reason_code": output.reason_code}
     if action.type == "TOOL_CALL":
-        result = execute(action.tool_name, action.arguments)
+        if os.getenv("AGENT_ARCHITECTURE", "legacy").lower() in {"converged", "semantic"}:
+            from .action_planner import to_execution_decision
+            from .executor import ActionExecutor
+            result = ActionExecutor().execute(to_execution_decision(output))
+        else:
+            result = execute(action.tool_name, action.arguments)
         record(
             state.session_id,
             {"step_type": "tool_call", "tool_name": action.tool_name, "arguments": action.arguments, "result": result.model_dump()},
@@ -462,11 +637,9 @@ def _route(ctx: TurnGraphState) -> dict:
             else:
                 reply = "当前选择的商品都有货，库存满足所需数量。"
         elif action.tool_name in {"calculate_total", "calculate_order_quote"} and result.ok:
-            lines = result.data["items"]
-            detail = "；".join(f"{line['name']}×{line['quantity']}={line['subtotal']}元" for line in lines)
-            reply = f"合计 {result.data['total']} 元（{detail}）。"
-            if result.data.get("discount", 0):
-                reply += f"已优惠 {result.data['discount']} 元。"
+            reply = compose_response(ResponseContext(
+                user_text=ctx["text"], action="REQUOTE", business_result=result.data,
+            ))
             state.delivery_mode = result.data.get("delivery_mode", state.delivery_mode)
             state.known_facts["delivery_mode"] = state.delivery_mode
             state.quote_context = _quote_context(result.data, action.arguments.get("customer_type", "REGULAR"))
@@ -596,6 +769,9 @@ def build_graph():
     workflow = StateGraph(TurnGraphState)
     workflow.add_node("load_context", _load_context)
     workflow.add_node("understand", _understand)
+    workflow.add_node("apply_converged_mutation", _apply_converged_mutation)
+    workflow.add_node("select_converged_path", _select_converged_path)
+    workflow.add_node("converged_short_path", _converged_short_path)
     workflow.add_node("supervisor", _supervise)
     workflow.add_node("update_goal_stack", _update_goal_stack)
     workflow.add_node("resolve_capabilities", _resolve_capabilities)
@@ -607,7 +783,14 @@ def build_graph():
     workflow.add_node("evaluate", _evaluate)
     workflow.add_edge(START, "load_context")
     workflow.add_edge("load_context", "understand")
-    workflow.add_edge("understand", "supervisor")
+    workflow.add_edge("understand", "apply_converged_mutation")
+    workflow.add_edge("apply_converged_mutation", "select_converged_path")
+    workflow.add_conditional_edges(
+        "select_converged_path",
+        _route_after_path_selection,
+        {"short_path": "converged_short_path", "supervisor": "supervisor"},
+    )
+    workflow.add_edge("converged_short_path", "route")
     workflow.add_edge("supervisor", "update_goal_stack")
     workflow.add_edge("update_goal_stack", "resolve_capabilities")
     workflow.add_edge("resolve_capabilities", "planner")

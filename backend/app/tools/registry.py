@@ -13,7 +13,28 @@ from ..agent.evidence_service import match_order, simulated_logistics
 
 def _now(): return datetime.now(timezone.utc).isoformat()
 
+
+TOOL_ALIASES = {
+    "submit_delivery_request": "create_delivery_request",
+    "create_order": "create_delivery_request",
+}
+
+# One canonical facade per business capability.  The names below are the
+# public Converged surface; aliases are accepted only for Legacy replay.
+TOOL_GROUPS = {
+    "inventory": frozenset({"search_products", "check_inventory", "list_available_inventory", "check_selected_items_inventory"}),
+    "quote": frozenset({"calculate_total", "calculate_order_quote"}),
+    "recommendation": frozenset({"recommend_products", "recommendation_metadata"}),
+    "after_sales": frozenset({"find_recent_orders", "get_order", "check_return_eligibility", "create_return_request", "query_logistics_status"}),
+    "delivery": frozenset({"create_delivery_request"}),
+}
+
+
+def canonical_tool_name(tool_name: str) -> str:
+    return TOOL_ALIASES.get(tool_name, tool_name)
+
 def execute(tool_name: str, arguments: dict) -> ToolResult:
+    tool_name = canonical_tool_name(tool_name)
     try:
         if tool_name == "search_products":
             data = catalog.search_products(arguments.get("query", ""), arguments.get("tags"))

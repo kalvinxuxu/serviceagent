@@ -7,6 +7,10 @@ ConversationAct = Literal["REQUEST", "SELECT", "ACCEPT", "REJECT", "ADD", "REMOV
 GoalStatus = Literal["PENDING", "ACTIVE", "PAUSED", "COMPLETED", "BLOCKED", "ABANDONED"]
 SemanticActionType = Literal["BROWSE", "QUERY", "SELECT", "ADD", "REMOVE", "SET_QUANTITY", "KEEP", "COMPARE", "REQUOTE", "SWITCH_TOPIC"]
 ReferenceTargetType = Literal["EXPLICIT_PRODUCT", "ORDINAL", "CHEAPEST", "FOCUSED_PRODUCT", "CATEGORY", "PRONOUN"]
+ExecutionKind = Literal["STATE_MUTATION", "TOOL_CALL", "ASK_USER", "HANDOFF", "NOOP"]
+PolicyDecisionType = Literal["ALLOW", "DENY", "REQUIRE_CONFIRMATION", "ESCALATE"]
+ActiveDomain = Literal["COMMERCE", "AFTER_SALES", "UNKNOWN"]
+ExecutionMode = Literal["AUTO", "WAITING_USER", "WAITING_CONFIRMATION", "HUMAN_HANDOFF"]
 
 
 class ReferenceTarget(BaseModel):
@@ -20,6 +24,58 @@ class SemanticAction(BaseModel):
     target: ReferenceTarget | None = None
     quantity: int | None = Field(default=None, ge=1)
     goal: str | None = None
+
+
+class ResolvedReference(BaseModel):
+    status: Literal["RESOLVED", "AMBIGUOUS", "UNRESOLVED"]
+    product_ids: list[str] = Field(default_factory=list)
+    source: str | None = None
+    confidence: float = Field(default=0, ge=0, le=1)
+    ambiguous_candidates: list[str] = Field(default_factory=list)
+
+
+class ExecutionDecision(BaseModel):
+    kind: ExecutionKind
+    action: str
+    tool_name: str | None = None
+    arguments: dict[str, Any] = Field(default_factory=dict)
+    requires_confirmation: bool = False
+    reason_code: str
+
+    @model_validator(mode="after")
+    def validate_execution(self):
+        if self.kind == "TOOL_CALL" and not self.tool_name:
+            raise ValueError("TOOL_CALL requires tool_name")
+        if self.kind != "TOOL_CALL" and self.tool_name:
+            raise ValueError("non-tool decision cannot contain tool_name")
+        return self
+
+
+class PolicyDecision(BaseModel):
+    decision: PolicyDecisionType
+    reason_code: str
+    requires_confirmation: bool = False
+
+
+class DomainRouteDecision(BaseModel):
+    """Converged Supervisor contract: domain routing only."""
+    domain: ActiveDomain
+    confidence: float = Field(ge=0, le=1)
+    reason_code: str
+
+
+class HandoffState(BaseModel):
+    reason_code: str
+    context: dict[str, Any] = Field(default_factory=dict)
+    pending_items: list[str] = Field(default_factory=list)
+    status: Literal["PENDING", "ACTIVE", "RESUMABLE", "COMPLETED"] = "PENDING"
+
+
+class ResponseContext(BaseModel):
+    user_text: str
+    action: str
+    business_result: Any = None
+    allowed_facts: dict[str, Any] = Field(default_factory=dict)
 
 
 class PlannerDecision(BaseModel):
@@ -198,6 +254,7 @@ class PlannerOutput(BaseModel):
     requires_confirmation: bool = False
     decision_summary: str | None = None
     current_goal_id: str | None = None
+    handoff_offer: bool = False
 
 class ToolResult(BaseModel):
     ok: bool

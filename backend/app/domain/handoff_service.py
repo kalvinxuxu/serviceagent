@@ -1,6 +1,7 @@
 import json
 from uuid import uuid4
 
+from ..agent.contracts import HandoffState
 from ..db.models.trace import HumanHandoff
 from ..db.session import SessionLocal, init_db
 
@@ -28,6 +29,17 @@ def create_handoff(session, reason: str, source_agent: str | None = None, target
     """Persist a complete, redacted handoff snapshot for the current session."""
     init_db()
     summary = summarize(session)
+    handoff_state = HandoffState(
+        reason_code=reason,
+        context={"source_agent": source_agent or getattr(session, "active_agent", "SUPERVISOR")},
+        pending_items=summary["pending_items"],
+        status="ACTIVE",
+    )
+    if hasattr(session, "execution_mode"):
+        session.execution_mode = "HUMAN_HANDOFF"
+        session.handoff_state = handoff_state
+        session.requires_human = True
+        session.status = "HANDOFF"
     summary["handoff"] = {
         "source_agent": source_agent or getattr(session, "active_agent", "SUPERVISOR"),
         "target_agent": target_agent,
@@ -49,7 +61,7 @@ def create_handoff(session, reason: str, source_agent: str | None = None, target
             )
         )
         db.commit()
-    return {"id": handoff_id, "reason": reason, "context": redact(summary)}
+    return {"id": handoff_id, "reason": reason, "state": handoff_state.model_dump(), "context": redact(summary)}
 
 def redact(summary: dict) -> dict:
     result = dict(summary)

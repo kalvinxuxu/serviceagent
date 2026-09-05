@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import threading
 from typing import Any, Literal
 
@@ -30,6 +31,17 @@ class SemanticWorkspaceOutput(BaseModel):
     context_relation: Literal["CONTINUE", "MODIFY", "NEW_TOPIC", "CORRECTION"] = "CONTINUE"
     confidence: float = Field(default=0, ge=0, le=1)
     followup_intent: Literal["ACCEPT_FOLLOWUP", "REJECT_FOLLOWUP", "CLARIFY_FOLLOWUP", "NONE"] = "NONE"
+    items: list[dict[str, Any]] = Field(default_factory=list)
+
+
+def semantic_action(workspace: SemanticWorkspaceOutput) -> dict[str, Any]:
+    """Expose only the semantic action; SKU and business facts stay outside it."""
+    return {
+        "operation": workspace.operation,
+        "target": workspace.target.model_dump(),
+        "quantity": workspace.quantity,
+        "intent": workspace.intent,
+    }
 
 
 def _run(coro):
@@ -93,6 +105,24 @@ def understand_semantic(state: CustomerServiceState, text: str) -> SemanticWorks
             raw.operation = "SELECT"
         if raw.intent == "PRICE_CALCULATION" and raw.operation == "ASK_INFORMATION":
             raw.operation = "REQUOTE"
+        # The workspace may understand the intent correctly while returning
+        # only a partial target for a multi-product utterance.  Enrich the
+        # semantic output with catalog-backed mentions from the current turn.
+        # This is entity extraction, not SKU generation: the existing
+        # Entity Resolver remains the only component allowed to resolve IDs.
+        from .understanding import _deterministic_understanding
+        catalog_understanding = _deterministic_understanding(text)
+        existing_queries = {
+            str(item.get("query", "")) for item in raw.items if item.get("query")
+        }
+        for item in catalog_understanding.requested_items:
+            if item.query not in existing_queries:
+                raw.items.append({
+                    "query": item.query,
+                    "quantity": item.quantity,
+                    "operation": item.operation,
+                })
+                existing_queries.add(item.query)
         return raw
     except Exception:
         # Fallback only interprets this turn; historical references remain the
@@ -104,12 +134,37 @@ def _from_legacy_fallback(state: CustomerServiceState, text: str) -> SemanticWor
     from .understanding import _deterministic_understanding
     semantic = _deterministic_understanding(text)
     requested = semantic.requested_items
+    if any(word in text for word in ("最便宜", "最贵")) and (state.recommendation_candidates or state.known_facts.get("recommendations")):
+        quantity_match = re.search(r"(\d+|一|两|二|三|四|五|六|七|八|九|十)\s*个", text)
+        numbers = {"一": 1, "两": 2, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10}
+        quantity = None if not quantity_match else int(quantity_match.group(1)) if quantity_match.group(1).isdigit() else numbers[quantity_match.group(1)]
+        return SemanticWorkspaceOutput(
+            intent="PRODUCT_SELECTION" if quantity else "PRODUCT_COMPARE",
+            target=SemanticTarget(type="REFERENCE", value="CHEAPEST" if "最便宜" in text else "MOST_EXPENSIVE"),
+            operation="SELECT" if quantity else "ASK_INFORMATION", quantity=quantity, confidence=0.95,
+        )
     if requested:
+        if len(requested) > 1:
+            return SemanticWorkspaceOutput(
+                intent="PRICE_CALCULATION", target=SemanticTarget(type="MULTIPLE", value=[item.query for item in requested]),
+                operation="ADD", quantity=None, items=[{"query": item.query, "quantity": item.quantity} for item in requested],
+                constraints=semantic.constraints, confidence=1.0,
+            )
         item = requested[0]
+        target_type = "CATEGORY" if item.category and item.category == item.query else "PRODUCT"
         return SemanticWorkspaceOutput(
             intent="PRICE_CALCULATION" if "PRICE_CALCULATION" in semantic.goals else "INVENTORY_CHECK" if "INVENTORY_CHECK" in semantic.goals else "SELECT_PRODUCT",
-            target=SemanticTarget(type="PRODUCT", value=item.query), operation="ADD" if item.operation == "ADD" else item.operation,
+            target=SemanticTarget(type=target_type, value=item.query), operation="ADD" if item.operation == "ADD" else item.operation,
             quantity=item.quantity, constraints=semantic.constraints, confidence=1.0,
+        )
+    quantity_match = re.search(r"(\d+|一|两|二|三|四|五|六|七|八|九|十)\s*个", text)
+    if quantity_match and (state.focused_product or state.known_facts.get("selected_products")):
+        numbers = {"一": 1, "两": 2, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10}
+        raw = quantity_match.group(1)
+        return SemanticWorkspaceOutput(
+            intent="SELECT_PRODUCT", target=SemanticTarget(type="REFERENCE", value="FOCUSED"),
+            operation="SET_QUANTITY" if any(word in text for word in ("改成", "调整为", "变成")) else "SELECT",
+            quantity=int(raw) if raw.isdigit() else numbers[raw], confidence=0.9,
         )
     return SemanticWorkspaceOutput(
         intent=semantic.goals[0] if semantic.goals else "OTHER",
@@ -125,7 +180,11 @@ def to_understanding(semantic: SemanticWorkspaceOutput) -> UnderstandingOutput:
     if semantic.target.type == "REFERENCE" and semantic.target.value:
         references = [str(semantic.target.value)]
     requested = []
-    if semantic.target.type in {"PRODUCT", "CATEGORY"} and isinstance(semantic.target.value, str) and semantic.target.value:
+    if semantic.items:
+        requested = [RequestedItem(query=str(item.get("query", "")), quantity=int(item.get("quantity", 1)), operation="ADD") for item in semantic.items if item.get("query")]
+    elif semantic.target.type == "MULTIPLE" and isinstance(semantic.target.value, list):
+        requested = [RequestedItem(query=str(value), quantity=semantic.quantity or 1, operation="ADD") for value in semantic.target.value]
+    elif semantic.target.type in {"PRODUCT", "CATEGORY"} and isinstance(semantic.target.value, str) and semantic.target.value:
         operation = "ADD" if semantic.operation == "SELECT" else semantic.operation if semantic.operation in {"ADD", "REMOVE", "SET_QUANTITY", "REPLACE", "KEEP"} else "ADD"
         requested = [RequestedItem(
             query=semantic.target.value,

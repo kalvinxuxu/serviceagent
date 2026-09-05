@@ -264,6 +264,13 @@ def latest_benchmark():
     if not reports:
         raise HTTPException(status_code=404, detail="BENCHMARK_REPORT_NOT_FOUND")
     try:
-        return json.loads(reports[0].read_text(encoding="utf-8"))
+        payload = json.loads(reports[0].read_text(encoding="utf-8"))
+        # Keep the original admin contract for comparison reports, which put
+        # metrics under each architecture variant instead of at the root.
+        if "metrics" not in payload and isinstance(payload.get("variants"), dict):
+            preferred = payload["variants"].get("semantic") or payload["variants"].get("legacy") or {}
+            if isinstance(preferred, dict) and "metrics" in preferred:
+                payload["metrics"] = preferred["metrics"]
+        return payload
     except (OSError, json.JSONDecodeError):
         raise HTTPException(status_code=422, detail="BENCHMARK_REPORT_INVALID")

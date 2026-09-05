@@ -1,6 +1,6 @@
 from typing import Any, Literal
 from pydantic import BaseModel, Field
-from .contracts import QuoteContext, PendingFollowup
+from .contracts import ActiveDomain, ExecutionMode, HandoffState, QuoteContext, PendingFollowup
 
 SessionStatus = Literal["IN_PROGRESS", "WAITING_USER", "WAITING_SELECTION", "WAITING_CONFIRMATION", "HANDOFF", "RESOLVED", "FAILED"]
 
@@ -37,6 +37,9 @@ class CustomerServiceState(BaseModel):
     current_order: dict[str, Any] | None = None
     complaint_context: dict[str, Any] | None = None
     active_agent: Literal["SUPERVISOR", "COMMERCE", "AFTER_SALES", "HUMAN"] = "SUPERVISOR"
+    active_domain: ActiveDomain = "UNKNOWN"
+    execution_mode: ExecutionMode = "AUTO"
+    handoff_state: HandoffState | None = None
     task_stack: list[dict[str, Any]] = Field(default_factory=list)
     handoff_history: list[dict[str, Any]] = Field(default_factory=list)
     semantic_state: dict[str, Any] = Field(default_factory=dict)

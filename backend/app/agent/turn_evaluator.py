@@ -26,7 +26,16 @@ def evaluate_turn(state, trace: dict | None = None) -> TurnEvaluation:
     if not upstream_failure:
         scores["FOLLOWUP_INTENT_RESOLVER"] = "PASS" if state.known_facts.get("followup_intent") or not state.pending_followup else "NOT_RUN"
         scores["NORMALIZATION"] = "PASS" if state.semantic_state else "NOT_RUN"
-        scores["ENTITY_RESOLVER"] = "PASS" if state.known_facts.get("resolved_products") is not None else "NOT_RUN"
+        understanding = state.known_facts.get("understanding", {})
+        requested = understanding.get("requested_items", [])
+        resolved = state.known_facts.get("resolved_products") or []
+        resolved_count = sum(1 for item in resolved if item.get("product_id"))
+        if requested and resolved_count < len(requested):
+            scores["ENTITY_RESOLVER"] = "FAIL"
+        elif requested:
+            scores["ENTITY_RESOLVER"] = "PASS"
+        else:
+            scores["ENTITY_RESOLVER"] = "NOT_RUN"
         scores["CONSTRAINT_EXTRACTION"] = "PASS" if state.known_facts.get("understanding", {}).get("constraints") is not None else "NOT_RUN"
         scores["GOAL_MANAGER"] = "PASS" if state.goals else "NOT_RUN"
         scores["CAPABILITY_RESOLVER"] = "PASS" if state.known_facts.get("capabilities") is not None else "NOT_RUN"
@@ -38,9 +47,17 @@ def evaluate_turn(state, trace: dict | None = None) -> TurnEvaluation:
         scores["STATE_MANAGER"] = "PASS" if state.state_version >= 1 else "FAIL"
         if state.known_facts.get("slot_update_status") == "UNCHANGED" and state.missing_slots:
             scores["STATE_MANAGER"] = "FAIL"
-        scores["RESPONSE_GENERATION"] = "PASS" if trace.get("status") != "FAILED" else "FAIL"
+        scores["RESPONSE_GENERATION"] = "PASS" if trace.get("status") not in {"FAILED", "HANDOFF"} else "FAIL"
     else:
         scores["RESPONSE_GENERATION"] = "FAIL"
+
+    # An upstream failure prevents downstream components from being assessed.
+    # This avoids reporting a successful business call or response when the
+    # planner only produced a fallback/clarification.
+    first_failure = next((component for component in ORDER if scores[component] == "FAIL"), None)
+    if first_failure:
+        for component in ORDER[ORDER.index(first_failure) + 1:]:
+            scores[component] = "NOT_RUN"
 
     failure = next((component for component in ORDER if scores[component] == "FAIL"), None)
     return TurnEvaluation(
